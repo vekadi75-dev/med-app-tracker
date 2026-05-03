@@ -1,310 +1,1234 @@
-
-<h2 class="sr-only">Medical school application tracker with AI-powered admissions lookup</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Med School Application Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-.app{padding:0.5rem 0 2rem;font-family:var(--font-sans);font-size:14px}
-.tab-nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem;overflow-x:auto}
-.tb{padding:10px 14px;font-size:13px;color:var(--color-text-secondary);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-0.5px;font-family:var(--font-sans)}
-.tb.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
-.tb:hover:not(.on){color:var(--color-text-primary)}
-.panel{display:none}.panel.on{display:block}
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
-.sc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.85rem 1rem}
-.sl{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
-.sn{font-size:22px;font-weight:500}.ss{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
-.pb{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:8px}
-.pf{height:100%;border-radius:2px;background:var(--color-text-success);transition:width 0.4s}
-.ctog-wrap{display:flex;gap:6px;margin-bottom:1.25rem}
-.ct{padding:5px 12px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);cursor:pointer;font-family:var(--font-sans)}
-.ct.on{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent}
-.sh{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;padding:1rem 0 0.5rem;border-bottom:0.5px solid var(--color-border-tertiary)}
-.ci{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
-.ci:last-child{border-bottom:none}
-.ci input[type=checkbox]{margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:var(--color-text-success)}
-.cit{flex:1}.cil{font-size:13.5px;line-height:1.4;color:var(--color-text-primary)}
-.cil.done{color:var(--color-text-tertiary);text-decoration:line-through}
-.cin{font-size:11.5px;color:var(--color-text-tertiary);margin-top:2px}
-.af{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:1.25rem;background:var(--color-background-secondary)}
-.fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.fr:last-child{margin-bottom:0}
-.fr input,.fr select{flex:1;min-width:90px;font-size:13px}
-.skcard{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem 1rem;margin-bottom:8px;background:var(--color-background-primary)}
-.skh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.skn{flex:1;font-size:14px;font-weight:500;min-width:80px}
-.bx{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap}
-.bmd{background:var(--color-background-info);color:var(--color-text-info)}
-.bdo{background:var(--color-background-success);color:var(--color-text-success)}
-.bphd{background:var(--color-background-warning);color:var(--color-text-warning)}
-.bsf{background:var(--color-background-success);color:var(--color-text-success)}
-.btg{background:var(--color-background-warning);color:var(--color-text-warning)}
-.brc{background:var(--color-background-danger);color:var(--color-text-danger)}
-.ssel{font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:3px 6px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans)}
-.db{background:none;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:4px;font-size:14px;line-height:1;border-radius:4px}
-.db:hover{color:var(--color-text-danger)}
-.lookup-btn{background:none;border:0.5px solid var(--color-border-secondary);border-radius:4px;cursor:pointer;color:var(--color-text-secondary);padding:4px 8px;font-size:12px;font-family:var(--font-sans);display:flex;align-items:center;gap:4px;white-space:nowrap}
-.lookup-btn:hover{color:var(--color-text-primary);border-color:var(--color-border-primary)}
-.lookup-btn:disabled{opacity:0.5;cursor:not-allowed}
-.spinner{width:12px;height:12px;border:1.5px solid var(--color-border-secondary);border-top-color:var(--color-text-secondary);border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
-.adm-box{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary)}
-.adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin-bottom:8px}
-.adm-cell{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 10px}
-.adm-label{font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px}
-.adm-val{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-.adm-reqs{margin-top:6px}
-.adm-req-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;font-weight:500}
-.adm-req-item{font-size:12px;color:var(--color-text-secondary);padding:3px 0;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;gap:6px}
-.adm-req-item:last-child{border-bottom:none}
-.adm-req-item::before{content:"–";color:var(--color-text-tertiary);flex-shrink:0}
-.adm-notes{font-size:12px;color:var(--color-text-secondary);margin-top:6px;padding:6px 8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
-.adm-err{font-size:12px;color:var(--color-text-danger);margin-top:6px}
-.adm-src{font-size:11px;color:var(--color-text-tertiary);margin-top:6px;font-style:italic}
-.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-tertiary);font-size:13px}
-.seccard{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem 1rem;margin-bottom:8px;background:var(--color-background-primary)}
-.sech{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-.secn{flex:1;font-size:14px;font-weight:500}
-.di{font-size:12px;color:var(--color-text-secondary)}
-.dw{color:var(--color-text-warning);font-weight:500}
-.dd{color:var(--color-text-danger);font-weight:500}
-.ni{width:100%;font-size:12px;padding:5px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);margin-top:6px;resize:vertical;min-height:48px}
-.ni::placeholder{color:var(--color-text-tertiary)}
-.dash-school-hdr{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-secondary);margin:0 0 0.75rem}
-.dsr{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
-.dsr:last-child{border-bottom:none}
-.dsn{flex:1;font-weight:500}
+:root {
+  --g900: #0D2118;
+  --g800: #163322;
+  --g700: #1E4A30;
+  --g600: #266140;
+  --g500: #2E7850;
+  --g400: #3A9664;
+  --g300: #5DB882;
+  --g200: #93D4AE;
+  --g100: #C8ECD8;
+  --g50:  #EBF7F0;
+  --cream: #FAF7F2;
+  --cream2: #F2EDE5;
+  --cream3: #E8E1D6;
+  --gold: #B8922A;
+  --gold-bg: #FBF3E0;
+  --red: #C0392B;
+  --red-bg: #FDECEA;
+  --blue: #2563EB;
+  --blue-bg: #EFF5FF;
+  --text: #1A1A18;
+  --text2: #4A5246;
+  --text3: #7E8C7A;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.12);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
+  --radius: 10px;
+  --radius-lg: 14px;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body { font-family: var(--font-body); background: var(--cream); color: var(--text); min-height: 100vh; }
+
+/* ── TOP HEADER ── */
+.topbar {
+  background: var(--g800);
+  background-image: radial-gradient(ellipse at 20% 50%, rgba(94,184,130,0.08) 0%, transparent 60%),
+                    radial-gradient(ellipse at 80% 20%, rgba(38,97,64,0.3) 0%, transparent 50%);
+  padding: 28px 40px 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.topbar-left h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+.topbar-left p {
+  font-size: 12.5px;
+  color: var(--g200);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.topbar-stats {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+.ts { text-align: right; }
+.ts-num { font-family: var(--font-display); font-size: 28px; color: #fff; font-weight: 500; line-height: 1; }
+.ts-label { font-size: 11px; color: var(--g200); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 3px; }
+.ts-divider { width: 1px; background: rgba(255,255,255,0.12); height: 36px; }
+
+/* ── PROFILE BAR ── */
+.profile-bar {
+  background: var(--g700);
+  padding: 10px 40px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pb-label { font-size: 11px; color: var(--g200); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.pb-input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 5px 10px;
+  width: 90px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pb-input::placeholder { color: var(--g200); opacity: 0.7; }
+.pb-input:focus { background: rgba(255,255,255,0.15); border-color: var(--g300); }
+.pb-group { display: flex; align-items: center; gap: 8px; }
+.pb-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.12); }
+.cycle-badge {
+  background: var(--g500);
+  color: var(--g100);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* ── TAB NAV ── */
+.tab-nav {
+  background: var(--cream2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tb {
+  padding: 13px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  color: var(--text3);
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tb:hover { color: var(--text2); }
+.tb.on { color: var(--g600); border-bottom-color: var(--g500); }
+.tb-icon { width: 15px; height: 15px; opacity: 0.7; }
+.tb.on .tb-icon { opacity: 1; }
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 860px; margin: 0 auto; padding: 32px 40px 60px; }
+@media(max-width:600px) { .main { padding: 20px 16px 60px; } .topbar { padding: 20px 16px 18px; } .profile-bar { padding: 10px 16px; } .tab-nav { padding: 0 16px; } }
+
+.panel { display: none; }
+.panel.on { display: block; }
+
+/* ── CARDS ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.card + .card, .section-card + .section-card { margin-top: 16px; }
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-title-icon {
+  width: 28px; height: 28px;
+  background: var(--g50);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+/* ── STAT GRID ── */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--g400);
+}
+.stat-card.gold::before { background: var(--gold); }
+.stat-card.blue::before { background: var(--blue); }
+.stat-card.green-bright::before { background: var(--g300); }
+.stat-label { font-size: 10.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; font-weight: 500; }
+.stat-num { font-family: var(--font-display); font-size: 30px; font-weight: 600; color: var(--text); line-height: 1; }
+.stat-sub { font-size: 11.5px; color: var(--text3); margin-top: 4px; }
+.stat-bar { height: 3px; background: var(--cream3); border-radius: 2px; margin-top: 10px; }
+.stat-fill { height: 100%; border-radius: 2px; background: var(--g400); transition: width 0.5s ease; }
+.stat-fill.gold { background: var(--gold); }
+.stat-fill.blue { background: var(--blue); }
+
+/* ── PROGRESS RINGS AREA ── */
+.progress-rings {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0 12px;
+  flex-wrap: wrap;
+}
+.ring-wrap { text-align: center; }
+.ring-label-main { font-size: 12px; font-weight: 500; color: var(--text2); margin-top: 8px; }
+.ring-label-sub { font-size: 11px; color: var(--text3); }
+svg.ring { transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--cream3); stroke-width: 6; }
+.ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+.ring-fill.amcas { stroke: var(--g400); }
+.ring-fill.aacomas { stroke: #2563EB; }
+.ring-fill.tmdsas { stroke: var(--gold); }
+.ring-text { dominant-baseline: middle; text-anchor: middle; font-family: var(--font-body); }
+
+/* ── CHECKLIST ── */
+.cl-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.cl-tab {
+  padding: 7px 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: #fff;
+  color: var(--text3);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.cl-tab:hover { color: var(--text); border-color: var(--g300); }
+.cl-tab.md.on { background: var(--g600); color: #fff; border-color: var(--g600); }
+.cl-tab.do.on { background: #2563EB; color: #fff; border-color: #2563EB; }
+.cl-tab.tx.on { background: var(--gold); color: #fff; border-color: var(--gold); }
+.cl-pct { font-size: 11px; opacity: 0.75; }
+
+.cl-section-head {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 18px 0 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cl-section-head::before {
+  content: '';
+  width: 3px; height: 12px;
+  background: var(--g400);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.cl-section-head.blue::before { background: #2563EB; }
+.cl-section-head.gold::before { background: var(--gold); }
+
+.ci {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  transition: background 0.1s;
+}
+.ci:last-child { border-bottom: none; }
+.ci-check {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border2);
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  cursor: pointer;
+  appearance: none;
+  background: #fff;
+  position: relative;
+  transition: all 0.15s;
+}
+.ci-check:checked {
+  background: var(--g500);
+  border-color: var(--g500);
+}
+.ci-check:checked::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 6px;
+  width: 4px; height: 7px;
+  border: 1.5px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+.ci-check.blue:checked { background: #2563EB; border-color: #2563EB; }
+.ci-check.gold:checked { background: var(--gold); border-color: var(--gold); }
+.ci-body { flex: 1; }
+.ci-label { font-size: 13.5px; color: var(--text); line-height: 1.4; transition: color 0.15s; }
+.ci-label.done { color: var(--text3); text-decoration: line-through; }
+.ci-note { font-size: 12px; color: var(--text3); margin-top: 2px; line-height: 1.4; }
+
+/* ── SCHOOL ADD FORM ── */
+.add-form {
+  background: var(--g50);
+  border: 1px solid var(--g100);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.add-form-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--g600);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.form-row:last-child { margin-bottom: 0; }
+.form-row input, .form-row select {
+  flex: 1; min-width: 80px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-row input:focus, .form-row select:focus {
+  border-color: var(--g400);
+  box-shadow: 0 0 0 3px rgba(58,150,100,0.12);
+}
+.btn-add {
+  height: 36px;
+  padding: 0 20px;
+  background: var(--g600);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.btn-add:hover { background: var(--g500); }
+.btn-add:active { transform: scale(0.98); }
+
+/* ── SCHOOL CARDS ── */
+.school-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
+}
+.school-card:hover { box-shadow: var(--shadow); }
+.school-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.school-name { flex: 1; font-size: 14.5px; font-weight: 500; min-width: 100px; }
+.school-state { font-size: 12px; color: var(--text3); font-weight: 400; }
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+.badge-md    { background: var(--g50);   color: var(--g700); }
+.badge-do    { background: #EFF5FF;      color: #1D4ED8; }
+.badge-tx    { background: var(--gold-bg); color: #92400E; }
+.badge-phd   { background: #F3E8FF;      color: #6B21A8; }
+.badge-reach { background: var(--red-bg); color: var(--red); }
+.badge-target{ background: var(--gold-bg); color: #92400E; }
+.badge-safety{ background: var(--g50);   color: var(--g700); }
+.school-select {
+  font-size: 12px;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 4px 8px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-body);
+  outline: none;
+}
+.school-select:focus { border-color: var(--g400); }
+.btn-icon {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); padding: 4px 6px; border-radius: 6px;
+  font-size: 14px; line-height: 1; transition: all 0.15s;
+}
+.btn-icon:hover { background: var(--red-bg); color: var(--red); }
+.btn-lookup {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-lookup:hover { border-color: var(--g400); color: var(--g600); background: var(--g50); }
+.btn-lookup:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── LOOKUP RESULT ── */
+.lookup-result {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.lookup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.lookup-cell {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.lookup-cell-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 3px; font-weight: 600; }
+.lookup-cell-val { font-size: 13px; font-weight: 500; color: var(--text); }
+.lookup-reqs { margin-top: 8px; }
+.lookup-req-title { font-size: 11.5px; font-weight: 600; color: var(--text2); margin-bottom: 5px; }
+.lookup-req-item { font-size: 12.5px; color: var(--text2); padding: 4px 0; display: flex; gap: 8px; align-items: flex-start; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.lookup-req-item:last-child { border-bottom: none; }
+.lookup-req-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--g400); flex-shrink: 0; margin-top: 5px; }
+.lookup-note { font-size: 12px; color: var(--text2); margin-top: 8px; padding: 8px 12px; background: var(--g50); border-radius: 8px; border-left: 3px solid var(--g300); }
+.lookup-src { font-size: 11px; color: var(--text3); margin-top: 8px; font-style: italic; }
+.lookup-error { font-size: 12.5px; color: var(--red); margin-top: 8px; }
+.spinner { width: 14px; height: 14px; border: 2px solid var(--g100); border-top-color: var(--g500); border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.lookup-loading { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text3); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* ── SECONDARY & INTERVIEW CARDS ── */
+.sec-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.sec-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.sec-name { flex: 1; font-size: 14.5px; font-weight: 500; }
+.due-tag { font-size: 11.5px; font-weight: 500; padding: 2px 8px; border-radius: 6px; }
+.due-ok { background: var(--g50); color: var(--g700); }
+.due-soon { background: var(--gold-bg); color: #92400E; }
+.due-late { background: var(--red-bg); color: var(--red); }
+.sec-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.sec-meta-item { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+.sec-notes {
+  width: 100%; font-size: 12.5px; padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px; background: var(--cream);
+  color: var(--text); font-family: var(--font-body);
+  resize: vertical; min-height: 56px; outline: none;
+  transition: border-color 0.15s;
+  margin-top: 4px;
+}
+.sec-notes:focus { border-color: var(--g300); background: #fff; }
+.sec-notes::placeholder { color: var(--text3); }
+
+/* ── DATES PANEL ── */
+.dates-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media(max-width:640px) { .dates-grid { grid-template-columns: 1fr; } }
+.dates-col-head {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dates-col-head.md { background: var(--g50); color: var(--g700); }
+.dates-col-head.do { background: #EFF5FF; color: #1D4ED8; }
+.dates-col-head.tx { background: var(--gold-bg); color: #92400E; }
+.date-item { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+.date-item:last-child { border-bottom: none; }
+.date-name { font-size: 12.5px; color: var(--text); font-weight: 500; }
+.date-val { font-size: 11.5px; color: var(--text3); }
+.date-val.urgent { color: var(--red); font-weight: 500; }
+.date-val.soon { color: var(--gold); font-weight: 500; }
+
+/* ── ACTIVITY TRACKER ── */
+.activity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; }
+.activity-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.activity-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+}
+.activity-card.clinical::after { background: var(--g400); }
+.activity-card.research::after { background: #2563EB; }
+.activity-card.volunteer::after { background: var(--gold); }
+.activity-card.shadow::after { background: #9333EA; }
+.activity-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); font-weight: 600; margin-bottom: 8px; }
+.activity-hrs {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.activity-input {
+  width: 100%; height: 32px; padding: 0 10px;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--cream);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.activity-input:focus { border-color: var(--g400); background: #fff; }
+
+/* ── DASHBOARD SCHOOL TABLE ── */
+.school-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.school-table th {
+  text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text3); font-weight: 600; padding: 0 12px 8px; border-bottom: 1px solid var(--border);
+}
+.school-table td { padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle; }
+.school-table tr:last-child td { border-bottom: none; }
+.school-table tr:hover td { background: var(--cream); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 40px 20px;
+  color: var(--text3); font-size: 13.5px;
+  background: var(--cream);
+  border: 1px dashed var(--cream3);
+  border-radius: var(--radius-lg);
+}
+.empty-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.5; }
+
+/* ── NOTES ── */
+.notes-area {
+  width: 100%; min-height: 140px; padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.7;
+  background: #fff;
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.notes-area:focus { border-color: var(--g300); box-shadow: 0 0 0 3px rgba(58,150,100,0.08); }
+
+/* ── TX NOTICE ── */
+.tx-notice {
+  background: var(--gold-bg);
+  border: 1px solid #E8C96A;
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 12.5px;
+  color: #78350F;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+.section-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text3);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── ANIMATIONS ── */
+.panel.on { animation: fadeUp 0.2s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 </style>
-<div class="app">
-<div class="tab-nav">
-  <button class="tb on" onclick="sw('dashboard',this)">Dashboard</button>
-  <button class="tb" onclick="sw('checklist',this)">Checklist</button>
-  <button class="tb" onclick="sw('schools',this)">Schools</button>
-  <button class="tb" onclick="sw('secondaries',this)">Secondaries</button>
-  <button class="tb" onclick="sw('interviews',this)">Interviews</button>
-</div>
-<div id="p-dashboard" class="panel on"><div class="sg" id="stat-grid"></div><div id="dash-schools"></div></div>
-<div id="p-checklist" class="panel">
-  <div class="ctog-wrap">
-    <button class="ct on" onclick="swCL('amcas',this)">AMCAS (MD)</button>
-    <button class="ct" onclick="swCL('aacomas',this)">AACOMAS (DO)</button>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>Med School Application Tracker</h1>
+    <p>AMCAS &nbsp;·&nbsp; AACOMAS &nbsp;·&nbsp; TMDSAS &nbsp;·&nbsp; 2025–2026 Cycle</p>
   </div>
-  <div id="cl-content"></div>
+  <div class="topbar-stats" id="topbar-stats">
+    <div class="ts"><div class="ts-num" id="top-schools">0</div><div class="ts-label">Schools</div></div>
+    <div class="ts-divider"></div>
+    <div class="ts"><div class="ts-num" id="top-interviews">0</div><div class="ts-label">Interviews</div></div>
+    <div class="ts-divider"></div>
+    <div class="ts"><div class="ts-num" id="top-accepted">0</div><div class="ts-label">Accepted</div></div>
+  </div>
 </div>
-<div id="p-schools" class="panel">
-  <div class="af">
-    <div class="fr">
-      <input type="text" id="sk-name" placeholder="School name (e.g. UT Southwestern Medical School)" style="flex:2;min-width:160px">
-      <select id="sk-type"><option value="MD">MD</option><option value="DO">DO</option><option value="MD/PhD">MD/PhD</option></select>
-      <select id="sk-tier"><option value="target">Target</option><option value="safety">Safety</option><option value="reach">Reach</option></select>
+
+<div class="profile-bar">
+  <span class="cycle-badge">2025–26 Cycle</span>
+  <div class="pb-divider"></div>
+  <div class="pb-group">
+    <span class="pb-label">MCAT</span>
+    <input class="pb-input" id="mcat-input" type="text" placeholder="e.g. 514" oninput="saveProfile()" style="width:80px">
+  </div>
+  <div class="pb-group">
+    <span class="pb-label">Cumulative GPA</span>
+    <input class="pb-input" id="cgpa-input" type="text" placeholder="3.85" oninput="saveProfile()" style="width:80px">
+  </div>
+  <div class="pb-group">
+    <span class="pb-label">Science GPA</span>
+    <input class="pb-input" id="sgpa-input" type="text" placeholder="3.82" oninput="saveProfile()" style="width:80px">
+  </div>
+</div>
+
+<nav class="tab-nav">
+  <button class="tb on" onclick="sw('dashboard',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </button>
+  <button class="tb" onclick="sw('checklist',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    Checklist
+  </button>
+  <button class="tb" onclick="sw('schools',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Schools
+  </button>
+  <button class="tb" onclick="sw('secondaries',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+    Secondaries
+  </button>
+  <button class="tb" onclick="sw('interviews',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    Interviews
+  </button>
+  <button class="tb" onclick="sw('activities',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Activities
+  </button>
+  <button class="tb" onclick="sw('dates',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Key Dates
+  </button>
+  <button class="tb" onclick="sw('notes',this)">
+    <svg class="tb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Notes
+  </button>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div id="p-dashboard" class="panel on">
+  <div class="stat-grid" id="stat-grid"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" id="dash-rings-wrap">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">📋</div>Application progress</div>
+      <div class="progress-rings" id="dash-rings"></div>
     </div>
-    <div class="fr">
-      <input type="text" id="sk-state" placeholder="State" style="max-width:80px">
-      <select id="sk-status">
-        <option value="not-started">Not started</option><option value="primary-submitted">Primary submitted</option>
-        <option value="secondary-received">Secondary received</option><option value="secondary-submitted">Secondary submitted</option>
-        <option value="interview-invite">Interview invite</option><option value="interview-complete">Interview complete</option>
-        <option value="waitlisted">Waitlisted</option><option value="accepted">Accepted</option>
-        <option value="rejected">Rejected</option><option value="withdrawn">Withdrawn</option>
+    <div class="card" id="dash-school-card">
+      <div class="card-title"><div class="card-title-icon">🏫</div>Schools at a glance</div>
+      <div id="dash-schools"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div id="p-checklist" class="panel">
+  <div class="cl-tabs" id="cl-tabs">
+    <button class="cl-tab md on" onclick="swCL('amcas',this)">
+      AMCAS — MD <span class="cl-pct" id="pct-amcas"></span>
+    </button>
+    <button class="cl-tab do" onclick="swCL('aacomas',this)">
+      AACOMAS — DO <span class="cl-pct" id="pct-aacomas"></span>
+    </button>
+    <button class="cl-tab tx" onclick="swCL('tmdsas',this)">
+      TMDSAS — Texas <span class="cl-pct" id="pct-tmdsas"></span>
+    </button>
+  </div>
+  <div class="card" id="cl-content"></div>
+</div>
+
+<!-- SCHOOLS -->
+<div id="p-schools" class="panel">
+  <div class="tx-notice">
+    <strong>Texas applicants:</strong> Texas public MD and DO schools (UT Southwestern, McGovern, UT Austin Dell Med, UTMB, Texas Tech, Texas A&M, UT Rio Grande Valley, TCOM) use <strong>TMDSAS</strong>, not AMCAS. Tag these as TX-MD or TX-DO. <em>Baylor College of Medicine</em> is private and uses AMCAS separately.
+  </div>
+  <div class="add-form">
+    <div class="add-form-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add a school
+    </div>
+    <div class="form-row">
+      <input type="text" id="sk-name" placeholder="School name (e.g. UT Southwestern Medical School)" style="flex:3;min-width:180px">
+      <select id="sk-type">
+        <option value="MD">MD</option>
+        <option value="DO">DO</option>
+        <option value="MD/PhD">MD/PhD</option>
+        <option value="TX-MD">TX-MD (TMDSAS)</option>
+        <option value="TX-DO">TX-DO (TMDSAS)</option>
       </select>
-      <button onclick="addSchool()">+ Add school</button>
+    </div>
+    <div class="form-row">
+      <select id="sk-tier"><option value="target">Target</option><option value="safety">Safety</option><option value="reach">Reach</option></select>
+      <input type="text" id="sk-state" placeholder="State" style="max-width:90px">
+      <select id="sk-status">
+        <option value="not-started">Not started</option>
+        <option value="primary-submitted">Primary submitted</option>
+        <option value="secondary-received">Secondary received</option>
+        <option value="secondary-submitted">Secondary submitted</option>
+        <option value="interview-invite">Interview invite</option>
+        <option value="interview-complete">Interview complete</option>
+        <option value="waitlisted">Waitlisted</option>
+        <option value="accepted">Accepted ✓</option>
+        <option value="rejected">Rejected</option>
+        <option value="withdrawn">Withdrawn</option>
+      </select>
+      <button class="btn-add" onclick="addSchool()">+ Add school</button>
     </div>
   </div>
   <div id="school-list"></div>
 </div>
+
+<!-- SECONDARIES -->
 <div id="p-secondaries" class="panel">
-  <div class="af">
-    <div class="fr">
-      <select id="se-school" style="flex:2;min-width:150px"><option value="">Select school...</option></select>
-      <input type="date" id="se-received" title="Date received"><input type="date" id="se-due" title="Due date">
+  <div class="add-form">
+    <div class="add-form-title">Track a secondary</div>
+    <div class="form-row">
+      <select id="se-school" style="flex:2;min-width:160px"><option value="">Select school...</option></select>
+      <input type="date" id="se-received" title="Date received">
+      <input type="date" id="se-due" title="Due date">
     </div>
-    <div class="fr">
-      <select id="se-status"><option value="not-started">Not started</option><option value="in-progress">In progress</option><option value="submitted">Submitted</option></select>
-      <button onclick="addSecondary()">+ Add secondary</button>
+    <div class="form-row">
+      <select id="se-status">
+        <option value="not-started">Not started</option>
+        <option value="in-progress">In progress</option>
+        <option value="submitted">Submitted</option>
+      </select>
+      <button class="btn-add" onclick="addSecondary()">+ Add</button>
     </div>
   </div>
   <div id="sec-list"></div>
 </div>
+
+<!-- INTERVIEWS -->
 <div id="p-interviews" class="panel">
-  <div class="af">
-    <div class="fr">
-      <select id="in-school" style="flex:2;min-width:150px"><option value="">Select school...</option></select>
+  <div class="add-form">
+    <div class="add-form-title">Track an interview</div>
+    <div class="form-row">
+      <select id="in-school" style="flex:2;min-width:160px"><option value="">Select school...</option></select>
       <select id="in-type"><option value="MMI">MMI</option><option value="Traditional">Traditional</option><option value="Panel">Panel</option><option value="Hybrid">Hybrid</option><option value="Unknown">Unknown</option></select>
     </div>
-    <div class="fr">
-      <input type="date" id="in-invite" title="Invite date"><input type="date" id="in-date" title="Interview date">
-      <select id="in-status"><option value="invited">Invited</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option></select>
-      <button onclick="addInterview()">+ Add</button>
+    <div class="form-row">
+      <input type="date" id="in-invite" title="Invite date">
+      <input type="date" id="in-date" title="Interview date">
+      <select id="in-status">
+        <option value="invited">Invited</option>
+        <option value="scheduled">Scheduled</option>
+        <option value="complete">Complete</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+      <button class="btn-add" onclick="addInterview()">+ Add</button>
     </div>
   </div>
   <div id="int-list"></div>
 </div>
+
+<!-- ACTIVITIES -->
+<div id="p-activities" class="panel">
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><div class="card-title-icon">⏱</div>Hour tracker</div>
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:16px">Log your accumulated hours. AMCAS asks for total hours per activity — keep this updated as you accumulate time.</p>
+    <div class="activity-grid" id="activity-grid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">✍️</div>Activity entries</div>
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:14px">AMCAS allows up to 15 activities. Plan which ones to include and designate your 3 Most Meaningful.</p>
+    <div id="activity-entries"></div>
+    <button class="btn-add" style="margin-top:12px" onclick="addActivityEntry()">+ Add activity</button>
+  </div>
 </div>
+
+<!-- KEY DATES -->
+<div id="p-dates" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📅</div>2025–2026 cycle key dates</div>
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:20px">Reference dates for the current cycle. Always verify on official portals — dates shift slightly year to year.</p>
+    <div class="dates-grid">
+      <div>
+        <div class="dates-col-head md">AMCAS — MD</div>
+        <div class="date-item"><div class="date-name">Application opens</div><div class="date-val">May 1, 2025</div></div>
+        <div class="date-item"><div class="date-name">Earliest submission</div><div class="date-val">May 29, 2025</div></div>
+        <div class="date-item"><div class="date-name">Early Bird deadline</div><div class="date-val soon">June 30, 2025</div></div>
+        <div class="date-item"><div class="date-name">Most school deadlines</div><div class="date-val">Oct – Dec 2025</div></div>
+        <div class="date-item"><div class="date-name">Secondary season</div><div class="date-val">July – Oct 2025</div></div>
+        <div class="date-item"><div class="date-name">Interview season</div><div class="date-val">Aug 2025 – Mar 2026</div></div>
+        <div class="date-item"><div class="date-name">First acceptances sent</div><div class="date-val">Oct 15, 2025</div></div>
+        <div class="date-item"><div class="date-name">Traffic Light Day</div><div class="date-val">Apr 30, 2026</div></div>
+      </div>
+      <div>
+        <div class="dates-col-head do">AACOMAS — DO</div>
+        <div class="date-item"><div class="date-name">Application opens</div><div class="date-val">May 1, 2025</div></div>
+        <div class="date-item"><div class="date-name">Earliest submission</div><div class="date-val">May 2025</div></div>
+        <div class="date-item"><div class="date-name">Rolling review begins</div><div class="date-val soon">Submit ASAP</div></div>
+        <div class="date-item"><div class="date-name">Most school deadlines</div><div class="date-val">Feb – Apr 2026</div></div>
+        <div class="date-item"><div class="date-name">Secondary season</div><div class="date-val">Jul – Nov 2025</div></div>
+        <div class="date-item"><div class="date-name">Interview season</div><div class="date-val">Aug 2025 – Mar 2026</div></div>
+        <div class="date-item"><div class="date-name">AACOMAS closes</div><div class="date-val">Mar 2026</div></div>
+      </div>
+      <div>
+        <div class="dates-col-head tx">TMDSAS — Texas</div>
+        <div class="date-item"><div class="date-name">Application opens</div><div class="date-val">May 1, 2025</div></div>
+        <div class="date-item"><div class="date-name">Submit early for priority</div><div class="date-val soon">June–July 2025</div></div>
+        <div class="date-item"><div class="date-name">Primary deadline</div><div class="date-val urgent">Oct 1, 2025</div></div>
+        <div class="date-item"><div class="date-name">Interview season</div><div class="date-val">Aug – Dec 2025</div></div>
+        <div class="date-item"><div class="date-name">Match Day ranking</div><div class="date-val urgent">Mid-Oct 2025</div></div>
+        <div class="date-item"><div class="date-name">Match Day results</div><div class="date-val">Mid-Oct 2025</div></div>
+        <div class="date-item"><div class="date-name">Post-Match decisions</div><div class="date-val">Oct – Mar 2026</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="p-notes" class="panel">
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📝</div>Application notes</div>
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:12px">Free-form space for strategy notes, advisor feedback, ideas for essays, or anything else.</p>
+    <textarea class="notes-area" id="notes-main" placeholder="e.g. Pre-med advisor suggested emphasizing research in personal statement... Update secondaries by end of week... Ask Dr. Smith about LOR timing..." oninput="saveNotes()"></textarea>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title"><div class="card-title-icon">💬</div>Personal statement notes</div>
+    <textarea class="notes-area" id="notes-ps" placeholder="Brainstorm, outline, key themes, feedback from reviewers..." oninput="saveNotes()" style="min-height:120px"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <span style="font-size:11.5px;color:var(--text3)" id="ps-char-count">0 / 5,300 characters (AMCAS)</span>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title"><div class="card-title-icon">🧑‍⚕️</div>Interfolio & letter tracking</div>
+    <textarea class="notes-area" id="notes-lors" placeholder="Track each recommender: name, date asked, letter uploaded (Y/N), notes on follow-up..." oninput="saveNotes()" style="min-height:100px"></textarea>
+  </div>
+</div>
+
+</main>
+
 <script>
-const CLD={
+/* ──────────────── DATA ──────────────── */
+const CLD = {
 amcas:[
   {s:'Account & setup',i:[
-    {id:'a01',t:'Create AMCAS account at aamc.org',n:'Opens in May each cycle — do this first'},
+    {id:'a01',t:'Create AMCAS account at aamc.org',n:'Opens in May — do this first before anything else'},
     {id:'a02',t:'Enable two-factor authentication on AAMC account'},
-    {id:'a03',t:'Review the AMCAS applicant guide'},
+    {id:'a03',t:'Download and read the AMCAS applicant guide (PDF)'},
   ]},
   {s:'Biographic information',i:[
     {id:'a04',t:'Complete Identifying Information section'},
     {id:'a05',t:'Complete Contact Information'},
     {id:'a06',t:'Complete Citizenship, Military & Disadvantaged Status'},
-    {id:'a07',t:'Enter Languages'},
+    {id:'a07',t:'Enter Languages spoken'},
   ]},
   {s:'Academic history',i:[
-    {id:'a08',t:'Request official transcripts from every college attended',n:'Order early — AMCAS needs originals, takes 2–4 weeks to process'},
-    {id:'a09',t:'Enter all coursework (every class, every semester, every school)',n:'Most time-consuming section — start early'},
-    {id:'a10',t:'Classify courses as BCPM or AO correctly',n:'BCPM = Biology, Chemistry, Physics, Math — affects science GPA'},
-    {id:'a11',t:'Verify transcript matching during AMCAS verification'},
+    {id:'a08',t:'Order official transcripts from every college attended',n:'AMCAS needs originals — allow 2–4 weeks for processing'},
+    {id:'a09',t:'Enter all coursework (every class, every semester, every school)',n:'Most time-consuming section — start early, go slow'},
+    {id:'a10',t:'Classify each course as BCPM or AO correctly',n:'BCPM = Biology, Chemistry, Physics, Math — affects science GPA'},
+    {id:'a11',t:'Verify all transcript matching during AMCAS verification stage'},
+    {id:'a12',t:'Double-check grades and credit hours are entered accurately'},
   ]},
-  {s:'MCAT scores',i:[
-    {id:'a12',t:'Confirm MCAT scores released to AMCAS',n:'Scores take ~30 days after test date to appear'},
-    {id:'a13',t:'Decide on score reporting if retake is planned'},
+  {s:'MCAT',i:[
+    {id:'a13',t:'Confirm MCAT scores are released to AMCAS',n:'Scores appear ~30 days after test date'},
+    {id:'a14',t:'Decide on score reporting strategy if a retake is planned'},
   ]},
   {s:'Work & activities',i:[
-    {id:'a14',t:'List all activities (clinical, research, volunteer, work, shadowing)'},
-    {id:'a15',t:'Write up to 15 activity descriptions',n:'700 characters each — be concise and specific'},
-    {id:'a16',t:'Designate 3 Most Meaningful activities',n:'1,325 characters each — explain impact and what you learned'},
-    {id:'a17',t:'Verify hours and dates are accurate'},
-    {id:'a18',t:'Collect contact info for supervisors of each activity'},
+    {id:'a15',t:'List all activities: clinical, research, volunteer, work, shadowing'},
+    {id:'a16',t:'Write descriptions for up to 15 activities (700 characters each)',n:'Be specific — quantify impact, describe your role clearly'},
+    {id:'a17',t:'Designate 3 Most Meaningful activities (1,325 characters each)',n:'Explain why it was meaningful, not just what you did'},
+    {id:'a18',t:'Verify all hours, dates, and contact info are accurate'},
+    {id:'a19',t:'Collect supervisor contact info for every activity listed'},
   ]},
   {s:'Personal statement',i:[
-    {id:'a19',t:'Brainstorm and outline your narrative'},
-    {id:'a20',t:'Write first draft (5,300 character limit)'},
-    {id:'a21',t:'Revise with feedback from advisor or mentor'},
-    {id:'a22',t:'Proofread final version carefully'},
-    {id:'a23',t:'Paste into AMCAS and check formatting'},
+    {id:'a20',t:'Brainstorm and outline your narrative — why medicine, why you'},
+    {id:'a21',t:'Write first draft (5,300 character limit)'},
+    {id:'a22',t:'Get feedback from pre-med advisor, professor, or trusted mentor'},
+    {id:'a23',t:'Revise, refine, and cut where needed'},
+    {id:'a24',t:'Proofread final version — read it out loud'},
+    {id:'a25',t:'Paste into AMCAS and verify formatting is preserved'},
   ]},
   {s:'Letters of recommendation',i:[
-    {id:'a24',t:'Identify recommenders (minimum 3 required)',n:'Typically: 2 science faculty, 1 non-science, 1+ clinical supervisor'},
-    {id:'a25',t:'Request letters — ask in person first, then follow with email'},
-    {id:'a26',t:'Send each recommender a packet (CV, PS draft, deadline, school list)'},
-    {id:'a27',t:'Enter LOR authors in AMCAS and send waiver requests'},
-    {id:'a28',t:'Follow up 2–3 weeks before deadline if not yet submitted'},
-    {id:'a29',t:'Confirm all letters received in AMCAS'},
+    {id:'a26',t:'Identify at least 3 recommenders',n:'Typically: 2 science faculty, 1 non-science, 1+ clinical supervisor'},
+    {id:'a27',t:'Ask each recommender in person or by phone first'},
+    {id:'a28',t:'Send follow-up email with CV, PS draft, school list, and deadline'},
+    {id:'a29',t:'Set up Interfolio account and create delivery requests'},
+    {id:'a30',t:'Send Interfolio upload link to each recommender'},
+    {id:'a31',t:'Enter LOR authors in AMCAS and send waiver requests'},
+    {id:'a32',t:'Follow up 2–3 weeks before deadline if letter not yet submitted'},
+    {id:'a33',t:'Confirm all letters received in AMCAS — verify waiver status'},
   ]},
   {s:'School selection',i:[
-    {id:'a30',t:'Purchase MSAR access for data on every MD school',n:'aamc.org/msar — includes GPA, MCAT, acceptance rates'},
-    {id:'a31',t:'Build balanced list (safety, target, reach schools)'},
-    {id:'a32',t:'Check each school\'s specific requirements (state preference, prerequisites)'},
-    {id:'a33',t:'Designate schools in AMCAS and pay fees'},
+    {id:'a34',t:'Purchase MSAR access for data on every MD school',n:'aamc.org/msar — GPA, MCAT, acceptance rates, class profiles'},
+    {id:'a35',t:'Build a balanced school list (safety, target, reach)'},
+    {id:'a36',t:'Check each school for state preference and specific prerequisites'},
+    {id:'a37',t:'Research mission, curriculum style, and match for each school'},
+    {id:'a38',t:'Designate schools in AMCAS portal and pay application fees'},
   ]},
   {s:'Submission',i:[
-    {id:'a34',t:'Review the complete application one final time'},
-    {id:'a35',t:'Certify and submit AMCAS',n:'Submit in June if possible — early submission = faster verification'},
-    {id:'a36',t:'Confirm email receipt from AMCAS'},
-    {id:'a37',t:'Monitor verification status (takes 4–6 weeks in summer)'},
-    {id:'a38',t:'Set up secondary application tracking system'},
+    {id:'a39',t:'Review the complete application one final time'},
+    {id:'a40',t:'Certify and submit AMCAS',n:'Submit in June if at all possible — earlier = faster verification'},
+    {id:'a41',t:'Confirm submission confirmation email received'},
+    {id:'a42',t:'Monitor verification status (takes 4–6 weeks peak summer)'},
+    {id:'a43',t:'Begin secondary application tracking immediately after submission'},
   ]},
   {s:'Financial aid',i:[
-    {id:'a39',t:'Apply for AAMC Fee Assistance Program (FAP) if eligible',n:'Reduces AMCAS fee and gives MSAR + MCAT prep access'},
-    {id:'a40',t:'Complete FAFSA at studentaid.gov'},
-    {id:'a41',t:'Note each school\'s financial aid deadlines'},
+    {id:'a44',t:'Apply for AAMC Fee Assistance Program (FAP) if eligible',n:'Reduces AMCAS fee significantly + MSAR and MCAT prep access'},
+    {id:'a45',t:'Complete FAFSA at studentaid.gov'},
+    {id:'a46',t:'Note each school\'s financial aid form deadlines separately'},
   ]},
 ],
 aacomas:[
   {s:'Account & setup',i:[
-    {id:'o01',t:'Create AACOMAS account at aacomas.liaisoncas.com',n:'Opens in May — separate system from AMCAS'},
-    {id:'o02',t:'Review the AACOMAS applicant guide and video tutorials'},
+    {id:'o01',t:'Create AACOMAS account at aacomas.liaisoncas.com',n:'Opens in May — entirely separate system from AMCAS'},
+    {id:'o02',t:'Watch AACOMAS tutorial videos and review the instruction guide'},
   ]},
   {s:'Personal information',i:[
     {id:'o03',t:'Complete Personal Information section'},
     {id:'o04',t:'Complete Citizenship & Demographics'},
-    {id:'o05',t:'Complete Background Information (criminal, academic dismissal questions)'},
+    {id:'o05',t:'Answer Background Information questions (criminal, academic dismissal)'},
   ]},
   {s:'Academic history',i:[
-    {id:'o06',t:'Request official transcripts sent to AACOMAS',n:'Separate request from AMCAS — order simultaneously'},
-    {id:'o07',t:'Enter all coursework in AACOMAS'},
-    {id:'o08',t:'Review AACOMAS GPA recalculation rules',n:'Grade replacement policy for repeated courses differs from AMCAS'},
+    {id:'o06',t:'Order transcripts sent to AACOMAS (separate from AMCAS)',n:'Order both simultaneously to save time and processing delays'},
+    {id:'o07',t:'Enter all coursework in AACOMAS portal'},
+    {id:'o08',t:'Understand AACOMAS GPA recalculation rules',n:'AACOMAS has unique GPA policies — grade replacement on retakes works differently'},
   ]},
-  {s:'MCAT scores',i:[
-    {id:'o09',t:'Verify MCAT scores submitted to AACOMAS'},
+  {s:'MCAT',i:[
+    {id:'o09',t:'Verify MCAT scores are released to AACOMAS'},
   ]},
   {s:'Experiences',i:[
-    {id:'o10',t:'Enter all experiences (clinical, research, volunteer, work)'},
-    {id:'o11',t:'Verify all hours and dates are accurate'},
-    {id:'o12',t:'Include shadowing of a DO physician if applicable',n:'Required or strongly preferred by most DO schools'},
+    {id:'o10',t:'Enter all experiences: clinical, research, volunteer, work, leadership'},
+    {id:'o11',t:'Verify all hours, dates, and descriptions are accurate'},
+    {id:'o12',t:'Include shadowing of a DO physician',n:'Required or strongly preferred by most DO programs — document hours carefully'},
   ]},
   {s:'Personal statement',i:[
-    {id:'o13',t:'Write AACOMAS personal statement (4,500 character limit)',n:'Can adapt AMCAS version but MUST address DO-specific content'},
-    {id:'o14',t:'Address osteopathic philosophy and OMM in your statement',n:'Explain why DO specifically, not just medicine generally'},
-    {id:'o15',t:'Proofread and finalize'},
+    {id:'o13',t:'Write AACOMAS personal statement (4,500 character limit)'},
+    {id:'o14',t:'Explicitly address osteopathic philosophy and why DO specifically',n:'DO not just copy your AMCAS statement — schools will notice'},
+    {id:'o15',t:'Reference your DO shadowing experience in the statement'},
+    {id:'o16',t:'Proofread and finalize'},
   ]},
   {s:'Letters of recommendation',i:[
-    {id:'o16',t:'Secure letter from a DO physician',n:'Required by many DO programs — check each school'},
-    {id:'o17',t:'Enter all LOR authors in AACOMAS'},
-    {id:'o18',t:'Confirm all letters received in system'},
+    {id:'o17',t:'Secure a letter from a DO physician',n:'Required by most DO programs — this is often the biggest differentiator'},
+    {id:'o18',t:'Enter all LOR authors in AACOMAS and send instructions'},
+    {id:'o19',t:'Confirm all letters are received in system before submission'},
   ]},
   {s:'School selection',i:[
-    {id:'o19',t:'Research DO schools using AACOMAS school directory'},
-    {id:'o20',t:'Visit individual school websites for specific requirements'},
-    {id:'o21',t:'Check state preference policies for each school'},
-    {id:'o22',t:'Note any early decision programs'},
-    {id:'o23',t:'Designate DO schools and pay fees'},
+    {id:'o20',t:'Research DO schools using AACOMAS school directory'},
+    {id:'o21',t:'Visit each school\'s site for mission, curriculum, and requirements'},
+    {id:'o22',t:'Check state preference and residency policies per school'},
+    {id:'o23',t:'Note any Early Decision Program (EDP) options'},
+    {id:'o24',t:'Designate DO schools and pay fees'},
   ]},
   {s:'Submission',i:[
-    {id:'o24',t:'Review entire AACOMAS application'},
-    {id:'o25',t:'Certify and submit',n:'DO schools have rolling admissions — earlier is better'},
-    {id:'o26',t:'Confirm receipt and begin monitoring for secondary invites'},
+    {id:'o25',t:'Review entire AACOMAS application'},
+    {id:'o26',t:'Certify and submit — DO schools have rolling admissions',n:'Earliest submissions get the most thorough review'},
+    {id:'o27',t:'Confirm receipt and monitor email for secondary invitations'},
+  ]},
+],
+tmdsas:[
+  {s:'Eligibility & account',i:[
+    {id:'t01',t:'Confirm Texas residency status',n:'Non-residents may apply but acceptance rates at public TX schools are very low'},
+    {id:'t02',t:'Create TMDSAS account at tmdsas.com',n:'Application opens May 1 each cycle — separate from AMCAS and AACOMAS'},
+    {id:'t03',t:'Read the TMDSAS instruction manual completely',n:'TMDSAS rules differ significantly — do not assume AMCAS rules apply'},
+  ]},
+  {s:'Texas schools on TMDSAS',i:[
+    {id:'t04',t:'UT Southwestern Medical School (Dallas) — highly research-focused'},
+    {id:'t05',t:'McGovern Medical School — UT Health Houston'},
+    {id:'t06',t:'UT Long School of Medicine — UT San Antonio'},
+    {id:'t07',t:'Dell Medical School — UT Austin (newer, primary care mission)'},
+    {id:'t08',t:'UTMB School of Medicine — Galveston'},
+    {id:'t09',t:'Texas Tech HSC School of Medicine — Lubbock'},
+    {id:'t10',t:'Texas Tech HSC Paul Foster SOM — El Paso (underserved focus)'},
+    {id:'t11',t:'UT Rio Grande Valley School of Medicine'},
+    {id:'t12',t:'Texas A&M College of Medicine'},
+    {id:'t13',t:'UNTHSC — Texas College of Osteopathic Medicine (DO, uses TMDSAS)'},
+    {id:'t14',t:'Baylor College of Medicine — USES AMCAS, not TMDSAS (private school)',n:'Apply to Baylor separately through AMCAS'},
+  ]},
+  {s:'Personal information',i:[
+    {id:'t15',t:'Complete biographical and contact information in portal'},
+    {id:'t16',t:'Upload Texas residency documentation as required'},
+    {id:'t17',t:'Answer background questions (criminal, academic dismissal)'},
+  ]},
+  {s:'Academic history',i:[
+    {id:'t18',t:'Order official transcripts sent to TMDSAS (separate from AMCAS)',n:'Order all transcripts simultaneously — allows parallel processing'},
+    {id:'t19',t:'Enter all coursework — TMDSAS calculates GPA independently',n:'TMDSAS counts ALL attempts including repeats — no grade replacement'},
+    {id:'t20',t:'Verify all prerequisite courses are complete or currently in progress'},
+  ]},
+  {s:'MCAT',i:[
+    {id:'t21',t:'Confirm MCAT released to TMDSAS'},
+    {id:'t22',t:'Note: competitive MCAT for TX schools is typically 510+',n:'UT Southwestern and McGovern average ~514–515; other TX schools lower'},
+  ]},
+  {s:'Experiences & activities',i:[
+    {id:'t23',t:'Enter all healthcare and community activities with accurate hours'},
+    {id:'t24',t:'Include research experience with description and hours'},
+    {id:'t25',t:'Document meaningful clinical patient contact hours'},
+    {id:'t26',t:'Include physician shadowing with hours and specialties'},
+  ]},
+  {s:'Essays',i:[
+    {id:'t27',t:'Write Personal Characteristics Essay (5,000 characters)',n:'This is TMDSAS\'s personal statement equivalent — why medicine, who you are'},
+    {id:'t28',t:'Write school-specific essays for each school that requires them',n:'Dell Med, TCOM, and others require separate "why us" essays'},
+    {id:'t29',t:'Tailor each school essay to that school\'s specific mission and values'},
+    {id:'t30',t:'Proofread all essays carefully — no spell-check inside the portal'},
+  ]},
+  {s:'Letters of evaluation',i:[
+    {id:'t31',t:'Note: TMDSAS calls them Letters of Evaluation, not Recommendation'},
+    {id:'t32',t:'Secure at least 3 letters (pre-med committee letter preferred if available)'},
+    {id:'t33',t:'Include at least 2 science faculty letters'},
+    {id:'t34',t:'Include a letter from a clinical supervisor or physician'},
+    {id:'t35',t:'Add all evaluators in TMDSAS portal and send upload instructions'},
+    {id:'t36',t:'Confirm all letters received before submitting application'},
+  ]},
+  {s:'School selection & match system',i:[
+    {id:'t37',t:'Designate which TMDSAS schools to apply to — pay fees in portal'},
+    {id:'t38',t:'Understand the TMDSAS Match algorithm',n:'You rank schools, they rank you. Match Day is mid-October — very different from AMCAS rolling'},
+    {id:'t39',t:'Research each school\'s specific class mission and community focus'},
+    {id:'t40',t:'Plan your Match Day ranking strategy ahead of time'},
+  ]},
+  {s:'Submission & timeline',i:[
+    {id:'t41',t:'Submit TMDSAS as early as possible — primary deadline is Oct 1',n:'Rolling review: early submission = more time for committee review'},
+    {id:'t42',t:'Confirm all transcripts and letters received post-submission'},
+    {id:'t43',t:'Monitor email actively for interview invitations (Aug–Dec)'},
+    {id:'t44',t:'Respond to interview invites within 24–48 hours — slots fill immediately'},
+    {id:'t45',t:'Prepare your school ranking decisions well before Match Day'},
   ]},
 ]};
 
-let ST={cl:{},sk:[],se:[],iv:[]};
-function save(){try{localStorage.setItem('msa_v2',JSON.stringify(ST));}catch(e){}}
-function load(){try{const d=localStorage.getItem('msa_v2');if(d){const p=JSON.parse(d);ST={...ST,...p};}}catch(e){}}
+/* ──────────────── STATE ──────────────── */
+let ST = { cl:{}, sk:[], se:[], iv:[], activities:{clinical:0,research:0,volunteer:0,shadow:0}, actEntries:[], notes:{main:'',ps:'',lors:''}, profile:{mcat:'',cgpa:'',sgpa:''} };
 
-function sw(id,btn){
+function save(){try{localStorage.setItem('mst_v3',JSON.stringify(ST));}catch(e){}}
+function load(){
+  try{
+    const raw = localStorage.getItem('mst_v3') || localStorage.getItem('msa_v3') || localStorage.getItem('msa_v2') || localStorage.getItem('msa_v1');
+    if(raw){ const p=JSON.parse(raw); ST={...ST,...p}; }
+  }catch(e){}
+}
+
+/* ──────────────── TABS ──────────────── */
+function sw(id, btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
   document.getElementById('p-'+id).classList.add('on');
   btn.classList.add('on');
-  if(id==='dashboard')renderDash();
-  if(id==='checklist')renderCL(curCL);
-  if(id==='schools'){renderSchools();popDrops();}
-  if(id==='secondaries'){popDrops();renderSecs();}
-  if(id==='interviews'){popDrops();renderInts();}
+  ({
+    dashboard: ()=>renderDash(),
+    checklist: ()=>renderCL(curCL),
+    schools: ()=>{renderSchools();popDrops();},
+    secondaries: ()=>{popDrops();renderSecs();},
+    interviews: ()=>{popDrops();renderInts();},
+    activities: ()=>renderActivities(),
+    notes: ()=>loadNotes(),
+  })[id]?.();
 }
 
-let curCL='amcas';
-function swCL(type,btn){curCL=type;document.querySelectorAll('.ct').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderCL(type);}
+/* ──────────────── PROFILE ──────────────── */
+function saveProfile(){
+  ST.profile.mcat = document.getElementById('mcat-input').value;
+  ST.profile.cgpa = document.getElementById('cgpa-input').value;
+  ST.profile.sgpa = document.getElementById('sgpa-input').value;
+  save();
+}
+function loadProfile(){
+  if(ST.profile.mcat) document.getElementById('mcat-input').value = ST.profile.mcat;
+  if(ST.profile.cgpa) document.getElementById('cgpa-input').value = ST.profile.cgpa;
+  if(ST.profile.sgpa) document.getElementById('sgpa-input').value = ST.profile.sgpa;
+}
 
-function clDone(type){const all=CLD[type].flatMap(s=>s.i).map(i=>i.id);return{done:all.filter(id=>ST.cl[id]).length,total:all.length};}
+/* ──────────────── DASHBOARD ──────────────── */
+function clDone(type){
+  const all=CLD[type].flatMap(s=>s.i).map(i=>i.id);
+  const done=all.filter(id=>ST.cl[id]).length;
+  return{done,total:all.length,pct:all.length?Math.round(done/all.length*100):0};
+}
 
 function renderDash(){
-  const am=clDone('amcas'),aa=clDone('aacomas');
-  const skl=ST.sk,sec=ST.se,inv=ST.iv;
-  const secDone=sec.filter(s=>s.status==='submitted').length;
-  const intSched=inv.filter(i=>i.status==='scheduled'||i.status==='complete').length;
+  const am=clDone('amcas'), aa=clDone('aacomas'), tx=clDone('tmdsas');
+  const skl=ST.sk, sec=ST.se, inv=ST.iv;
   const accepted=skl.filter(s=>s.status==='accepted').length;
+  const secPending=sec.filter(s=>s.status!=='submitted').length;
+
+  document.getElementById('top-schools').textContent=skl.length;
+  document.getElementById('top-interviews').textContent=inv.length;
+  document.getElementById('top-accepted').textContent=accepted;
+
   document.getElementById('stat-grid').innerHTML=`
-    <div class="sc"><div class="sl">AMCAS</div><div class="sn">${am.done}<span style="font-size:14px;color:var(--color-text-tertiary)">/${am.total}</span></div><div class="ss">${Math.round(am.done/am.total*100)}% complete</div><div class="pb"><div class="pf" style="width:${Math.round(am.done/am.total*100)}%"></div></div></div>
-    <div class="sc"><div class="sl">AACOMAS</div><div class="sn">${aa.done}<span style="font-size:14px;color:var(--color-text-tertiary)">/${aa.total}</span></div><div class="ss">${Math.round(aa.done/aa.total*100)}% complete</div><div class="pb"><div class="pf" style="width:${Math.round(aa.done/aa.total*100)}%"></div></div></div>
-    <div class="sc"><div class="sl">Schools</div><div class="sn">${skl.length}</div><div class="ss">${skl.filter(s=>s.tier==='reach').length} reach · ${skl.filter(s=>s.tier==='target').length} target · ${skl.filter(s=>s.tier==='safety').length} safety</div></div>
-    <div class="sc"><div class="sl">Secondaries</div><div class="sn">${secDone}<span style="font-size:14px;color:var(--color-text-tertiary)">/${sec.length}</span></div><div class="ss">${sec.filter(s=>s.status==='in-progress').length} in progress</div></div>
-    <div class="sc"><div class="sl">Interviews</div><div class="sn">${inv.length}</div><div class="ss">${intSched} scheduled/done</div></div>
-    ${accepted>0?`<div class="sc" style="border:0.5px solid var(--color-border-success)"><div class="sl" style="color:var(--color-text-success)">Acceptances</div><div class="sn" style="color:var(--color-text-success)">${accepted}</div></div>`:''}`;
-  const dsl=document.getElementById('dash-schools');
-  if(!skl.length){dsl.innerHTML='';return;}
+    <div class="stat-card"><div class="stat-label">AMCAS checklist</div><div class="stat-num">${am.done}<span style="font-size:14px;color:var(--text3)">/${am.total}</span></div><div class="stat-sub">${am.pct}% complete</div><div class="stat-bar"><div class="stat-fill" style="width:${am.pct}%"></div></div></div>
+    <div class="stat-card blue"><div class="stat-label">AACOMAS checklist</div><div class="stat-num">${aa.done}<span style="font-size:14px;color:var(--text3)">/${aa.total}</span></div><div class="stat-sub">${aa.pct}% complete</div><div class="stat-bar"><div class="stat-fill blue" style="width:${aa.pct}%"></div></div></div>
+    <div class="stat-card gold"><div class="stat-label">TMDSAS checklist</div><div class="stat-num">${tx.done}<span style="font-size:14px;color:var(--text3)">/${tx.total}</span></div><div class="stat-sub">${tx.pct}% complete</div><div class="stat-bar"><div class="stat-fill gold" style="width:${tx.pct}%"></div></div></div>
+    <div class="stat-card"><div class="stat-label">Total schools</div><div class="stat-num">${skl.length}</div><div class="stat-sub">${skl.filter(s=>s.tier==='reach').length} reach · ${skl.filter(s=>s.tier==='target').length} target · ${skl.filter(s=>s.tier==='safety').length} safety</div></div>
+    <div class="stat-card${accepted>0?' green-bright':''}"><div class="stat-label">Secondaries</div><div class="stat-num">${sec.filter(s=>s.status==='submitted').length}<span style="font-size:14px;color:var(--text3)">/${sec.length}</span></div><div class="stat-sub">${secPending} pending</div></div>
+    ${accepted>0?`<div class="stat-card green-bright"><div class="stat-label" style="color:var(--g600)">Accepted</div><div class="stat-num" style="color:var(--g600)">${accepted}</div><div class="stat-sub" style="color:var(--g500)">Keep going!</div></div>`:''}
+  `;
+
+  // Progress rings
+  const r = (pct, cls, label, sub) => {
+    const C = 2*Math.PI*32, off = C*(1-pct/100);
+    return `<div class="ring-wrap">
+      <svg class="ring" width="80" height="80" viewBox="0 0 80 80">
+        <circle class="ring-bg" cx="40" cy="40" r="32"/>
+        <circle class="ring-fill ${cls}" cx="40" cy="40" r="32" stroke-dasharray="${C}" stroke-dashoffset="${off}"/>
+        <text x="40" y="40" class="ring-text" style="transform:rotate(90deg);transform-origin:40px 40px;font-size:14px;font-weight:600;fill:var(--text)">${pct}%</text>
+      </svg>
+      <div class="ring-label-main">${label}</div>
+      <div class="ring-label-sub">${sub}</div>
+    </div>`;
+  };
+  document.getElementById('dash-rings').innerHTML =
+    r(am.pct,'amcas','AMCAS',`${am.done}/${am.total}`) +
+    r(aa.pct,'aacomas','AACOMAS',`${aa.done}/${aa.total}`) +
+    r(tx.pct,'tmdsas','TMDSAS',`${tx.done}/${tx.total}`);
+
+  // School table
+  const dsc = document.getElementById('dash-schools');
+  if(!skl.length){ dsc.innerHTML='<div style="font-size:12.5px;color:var(--text3);padding:8px 0">No schools added yet — go to the Schools tab to build your list.</div>'; return; }
   const SL={'not-started':'Not started','primary-submitted':'Primary submitted','secondary-received':'Secondary received','secondary-submitted':'Secondary submitted','interview-invite':'Interview invite','interview-complete':'Interview complete','waitlisted':'Waitlisted','accepted':'Accepted','rejected':'Rejected','withdrawn':'Withdrawn'};
-  const SC={'not-started':'var(--color-text-tertiary)','primary-submitted':'var(--color-text-secondary)','secondary-received':'var(--color-text-warning)','secondary-submitted':'var(--color-text-warning)','interview-invite':'var(--color-text-info)','interview-complete':'var(--color-text-info)','waitlisted':'var(--color-text-warning)','accepted':'var(--color-text-success)','rejected':'var(--color-text-danger)','withdrawn':'var(--color-text-tertiary)'};
-  dsl.innerHTML='<div class="dash-school-hdr">School status overview</div>'+skl.map(s=>`<div class="dsr"><span class="bx ${s.type==='DO'?'bdo':s.type==='MD/PhD'?'bphd':'bmd'}">${s.type}</span><span class="bx ${s.tier==='reach'?'brc':s.tier==='safety'?'bsf':'btg'}">${s.tier}</span><span class="dsn">${s.name}${s.state?' <span style="color:var(--color-text-tertiary);font-weight:400;font-size:12px">'+s.state+'</span>':''}</span><span style="font-size:12px;color:${SC[s.status]||'var(--color-text-secondary)'}">${SL[s.status]||s.status}</span></div>`).join('');
+  const SC={'not-started':'#9CA3AF','primary-submitted':'var(--text2)','secondary-received':'var(--gold)','secondary-submitted':'var(--gold)','interview-invite':'var(--blue)','interview-complete':'var(--blue)','waitlisted':'var(--gold)','accepted':'var(--g500)','rejected':'var(--red)','withdrawn':'#9CA3AF'};
+  dsc.innerHTML=`<table class="school-table"><thead><tr><th>School</th><th>Type</th><th>Tier</th><th>Status</th></tr></thead><tbody>${skl.map(s=>`<tr><td style="font-weight:500">${s.name}${s.state?` <span style="font-size:11px;color:var(--text3)">${s.state}</span>`:''}</td><td>${typeBadge(s.type)}</td><td>${tierBadge(s.tier)}</td><td style="font-size:12px;color:${SC[s.status]||'var(--text2)'}">● ${SL[s.status]||s.status}</td></tr>`).join('')}</tbody></table>`;
+  updateClPcts();
 }
+
+/* ──────────────── CHECKLIST ──────────────── */
+let curCL = 'amcas';
+function swCL(type, btn){
+  curCL=type;
+  document.querySelectorAll('.cl-tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderCL(type);
+}
+function getCheckClass(type){ return type==='aacomas'?'blue':type==='tmdsas'?'gold':''; }
+function getHeadClass(type){ return type==='aacomas'?'blue':type==='tmdsas'?'gold':''; }
 
 function renderCL(type){
-  document.getElementById('cl-content').innerHTML=CLD[type].map(sec=>`<div class="sh">${sec.s}</div>${sec.i.map(item=>`<div class="ci"><input type="checkbox" ${ST.cl[item.id]?'checked':''} onchange="toggleCI('${item.id}')"><div class="cit"><div class="cil ${ST.cl[item.id]?'done':''}">${item.t}</div>${item.n?`<div class="cin">${item.n}</div>`:''}</div></div>`).join('')}`).join('');
+  const cc=getCheckClass(type), hc=getHeadClass(type);
+  document.getElementById('cl-content').innerHTML = CLD[type].map(sec=>`
+    <div class="cl-section-head ${hc}">${sec.s}</div>
+    ${sec.i.map(item=>`
+    <div class="ci">
+      <input type="checkbox" class="ci-check ${cc}" ${ST.cl[item.id]?'checked':''} onchange="toggleCI('${item.id}')">
+      <div class="ci-body">
+        <div class="ci-label ${ST.cl[item.id]?'done':''}">${item.t}</div>
+        ${item.n?`<div class="ci-note">${item.n}</div>`:''}
+      </div>
+    </div>`).join('')}
+  `).join('');
+  updateClPcts();
 }
-function toggleCI(id){ST.cl[id]=!ST.cl[id];save();renderCL(curCL);}
+
+function toggleCI(id){
+  ST.cl[id]=!ST.cl[id];
+  save();
+  renderCL(curCL);
+}
+
+function updateClPcts(){
+  ['amcas','aacomas','tmdsas'].forEach(t=>{
+    const d=clDone(t);
+    const el=document.getElementById('pct-'+t);
+    if(el) el.textContent = `${d.pct}%`;
+  });
+}
+
+/* ──────────────── SCHOOLS ──────────────── */
+function typeBadge(t){
+  const m={'MD':'badge-md','DO':'badge-do','MD/PhD':'badge-phd','TX-MD':'badge-tx','TX-DO':'badge-tx'};
+  return `<span class="badge ${m[t]||'badge-md'}">${t}</span>`;
+}
+function tierBadge(t){
+  const m={target:'badge-target',safety:'badge-safety',reach:'badge-reach'};
+  return `<span class="badge ${m[t]||'badge-target'}">${t}</span>`;
+}
 
 function statusOpts(cur){
-  const opts=[['not-started','Not started'],['primary-submitted','Primary submitted'],['secondary-received','Secondary received'],['secondary-submitted','Secondary submitted'],['interview-invite','Interview invite'],['interview-complete','Interview complete'],['waitlisted','Waitlisted'],['accepted','Accepted'],['rejected','Rejected'],['withdrawn','Withdrawn']];
-  return opts.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('');
+  return[['not-started','Not started'],['primary-submitted','Primary submitted'],['secondary-received','Secondary received'],['secondary-submitted','Secondary submitted'],['interview-invite','Interview invite'],['interview-complete','Interview complete'],['waitlisted','Waitlisted'],['accepted','Accepted ✓'],['rejected','Rejected'],['withdrawn','Withdrawn']].map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('');
 }
 
 async function lookupSchool(id){
   const sk=ST.sk.find(s=>s.id===id);
-  if(!sk||sk.loading)return;
-  sk.loading=true;sk.admissions=null;
-  save();renderSchools();
+  if(!sk||sk.loading) return;
+  sk.loading=true; sk.admissions=null;
+  save(); renderSchools();
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
@@ -313,112 +1237,230 @@ async function lookupSchool(id){
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
         tools:[{type:'web_search_20250305',name:'web_search'}],
-        system:`You are a medical school admissions data assistant. Search for the admissions requirements for the specified medical school and return ONLY a valid JSON object — no markdown, no explanation, no preamble. The JSON must have exactly these keys: gpa_avg (string, e.g. "3.72"), mcat_avg (string, e.g. "512"), deadline_primary (string, e.g. "October 1, 2025"), deadline_secondary (string, e.g. "6 weeks after receipt"), interview_format (string, e.g. "MMI"), class_size (string, e.g. "200"), secondary_fee (string, e.g. "$100"), key_requirements (array of up to 4 short strings), notes (string, one sentence). Use "N/A" for unknown fields. Return ONLY the JSON object.`,
-        messages:[{role:'user',content:`Find 2025-2026 admissions requirements for ${sk.name}. I need: average GPA, average MCAT, primary application deadline, secondary essay deadline, interview format, class size, secondary fee, notable admission requirements or policies.`}]
+        system:`You are a medical school admissions data assistant. Search the web for current admissions data for the specified medical school and return ONLY a valid JSON object — no markdown, no backticks, no preamble. Required keys: gpa_avg (string), mcat_avg (string), deadline_primary (string), deadline_secondary (string), interview_format (string), class_size (string), secondary_fee (string), key_requirements (array of up to 4 short strings), notes (1 sentence about distinctive policies or characteristics). Use "N/A" for any unknown field. Return ONLY the JSON object, nothing else.`,
+        messages:[{role:'user',content:`Find 2025–2026 admissions requirements and statistics for ${sk.name}. Type: ${sk.type}. Return: average accepted GPA, average accepted MCAT, primary application deadline, secondary essay deadline, interview format, class size, secondary application fee, key requirements or distinctive policies.`}]
       })
     });
     const data=await res.json();
-    const textBlocks=data.content.filter(c=>c.type==='text');
-    const raw=textBlocks[textBlocks.length-1]?.text||'';
-    const match=raw.match(/\{[\s\S]*\}/);
-    if(!match)throw new Error('No JSON found');
-    const info=JSON.parse(match[0]);
-    sk.admissions=info;sk.loading=false;
-    save();renderSchools();
-  }catch(e){
-    sk.loading=false;
-    sk.admissions={error:'Could not retrieve data — try again, or check the school\'s admissions website directly.'};
-    save();renderSchools();
+    const raw=(data.content.filter(c=>c.type==='text').pop()?.text)||'';
+    const m=raw.match(/\{[\s\S]*\}/);
+    if(!m) throw new Error('no JSON');
+    sk.admissions=JSON.parse(m[0]);
+  } catch(e){
+    sk.admissions={error:'Could not retrieve data. Try again or visit the school\'s admissions page directly.'};
   }
+  sk.loading=false; save(); renderSchools();
 }
 
 function renderAdmBox(sk){
-  if(sk.loading)return`<div class="adm-box" style="display:flex;align-items:center;gap:8px;color:var(--color-text-secondary);font-size:12px"><div class="spinner"></div>Searching for admissions data...</div>`;
-  if(!sk.admissions)return'';
+  if(sk.loading) return `<div class="lookup-loading"><div class="spinner"></div>Searching admissions data for ${sk.name}...</div>`;
+  if(!sk.admissions) return '';
   const a=sk.admissions;
-  if(a.error)return`<div class="adm-box"><div class="adm-err">${a.error}</div></div>`;
-  const cells=[['Avg GPA',a.gpa_avg],['Avg MCAT',a.mcat_avg],['Primary deadline',a.deadline_primary],['Secondary deadline',a.deadline_secondary],['Interview format',a.interview_format],['Class size',a.class_size],['Secondary fee',a.secondary_fee]].filter(([,v])=>v&&v!=='N/A');
-  return`<div class="adm-box">
-    <div class="adm-grid">${cells.map(([l,v])=>`<div class="adm-cell"><div class="adm-label">${l}</div><div class="adm-val">${v}</div></div>`).join('')}</div>
-    ${(a.key_requirements&&a.key_requirements.length)?`<div class="adm-reqs"><div class="adm-req-label">Key requirements</div>${a.key_requirements.map(r=>`<div class="adm-req-item">${r}</div>`).join('')}</div>`:''}
-    ${a.notes&&a.notes!=='N/A'?`<div class="adm-notes">${a.notes}</div>`:''}
-    <div class="adm-src">Data sourced via AI web search — verify at the school's official admissions page before relying on deadlines.</div>
+  if(a.error) return `<div class="lookup-result"><div class="lookup-error">${a.error}</div></div>`;
+  const cells=[['Avg GPA',a.gpa_avg],['Avg MCAT',a.mcat_avg],['Primary deadline',a.deadline_primary],['Secondary deadline',a.deadline_secondary],['Interview',a.interview_format],['Class size',a.class_size],['Secondary fee',a.secondary_fee]].filter(([,v])=>v&&v!=='N/A');
+  return`<div class="lookup-result">
+    <div class="lookup-grid">${cells.map(([l,v])=>`<div class="lookup-cell"><div class="lookup-cell-label">${l}</div><div class="lookup-cell-val">${v}</div></div>`).join('')}</div>
+    ${a.key_requirements?.length?`<div class="lookup-reqs"><div class="lookup-req-title">Key requirements</div>${a.key_requirements.map(r=>`<div class="lookup-req-item"><div class="lookup-req-dot"></div>${r}</div>`).join('')}</div>`:''}
+    ${a.notes&&a.notes!=='N/A'?`<div class="lookup-note">${a.notes}</div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <div class="lookup-src">AI-sourced — always verify deadlines on the school's official admissions page before relying on them.</div>
+      <button class="btn-lookup" onclick="clearAdm('${sk.id}')" style="font-size:11px;padding:3px 9px">Refresh</button>
+    </div>
   </div>`;
 }
 
 function addSchool(){
   const n=document.getElementById('sk-name').value.trim();
-  if(!n)return;
+  if(!n) return;
   ST.sk.push({id:'sk'+Date.now(),name:n,type:document.getElementById('sk-type').value,tier:document.getElementById('sk-tier').value,state:document.getElementById('sk-state').value.trim(),status:document.getElementById('sk-status').value,admissions:null,loading:false});
-  document.getElementById('sk-name').value='';document.getElementById('sk-state').value='';
-  save();renderSchools();popDrops();
+  document.getElementById('sk-name').value='';
+  document.getElementById('sk-state').value='';
+  save(); renderSchools(); popDrops();
 }
-function updateSkStatus(id,v){ST.sk.find(s=>s.id===id).status=v;save();}
-function delSk(id){ST.sk=ST.sk.filter(s=>s.id!==id);save();renderSchools();popDrops();}
-function clearAdmissions(id){const sk=ST.sk.find(s=>s.id===id);if(sk){sk.admissions=null;sk.loading=false;}save();renderSchools();}
+
+function updateSkStatus(id,v){ ST.sk.find(s=>s.id===id).status=v; save(); }
+function delSk(id){ if(!confirm('Remove this school?')) return; ST.sk=ST.sk.filter(s=>s.id!==id); save(); renderSchools(); popDrops(); }
+function clearAdm(id){ const sk=ST.sk.find(s=>s.id===id); if(sk){sk.admissions=null;sk.loading=false;} save(); renderSchools(); }
 
 function renderSchools(){
   const el=document.getElementById('school-list');
-  if(!ST.sk.length){el.innerHTML='<div class="empty">No schools added yet. Add your first school above.</div>';return;}
+  if(!ST.sk.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">🏫</div>No schools added yet. Enter a school name above to get started.</div>'; return; }
   el.innerHTML=ST.sk.map(s=>`
-  <div class="skcard">
-    <div class="skh">
-      <span class="bx ${s.type==='DO'?'bdo':s.type==='MD/PhD'?'bphd':'bmd'}">${s.type}</span>
-      <span class="bx ${s.tier==='reach'?'brc':s.tier==='safety'?'bsf':'btg'}">${s.tier}</span>
-      <span class="skn">${s.name}${s.state?' <span style="font-weight:400;font-size:12px;color:var(--color-text-tertiary)">'+s.state+'</span>':''}</span>
-      <button class="lookup-btn" onclick="lookupSchool('${s.id}')" ${s.loading?'disabled':''} title="Look up admissions requirements">${s.loading?'<div class="spinner"></div> Searching...':'&#128269; Look up requirements'}</button>
-      <select class="ssel" onchange="updateSkStatus('${s.id}',this.value)">${statusOpts(s.status)}</select>
-      <button class="db" onclick="delSk('${s.id}')" title="Remove">✕</button>
+  <div class="school-card">
+    <div class="school-head">
+      ${typeBadge(s.type)}${tierBadge(s.tier)}
+      <span class="school-name">${s.name}${s.state?` <span class="school-state">${s.state}</span>`:''}</span>
+      <button class="btn-lookup" onclick="lookupSchool('${s.id}')" ${s.loading?'disabled':''}>${s.loading?'<div class="spinner"></div> Searching...':'🔍 Look up requirements'}</button>
+      <select class="school-select" onchange="updateSkStatus('${s.id}',this.value)">${statusOpts(s.status)}</select>
+      <button class="btn-icon" onclick="delSk('${s.id}')" title="Remove">✕</button>
     </div>
     ${renderAdmBox(s)}
   </div>`).join('');
 }
 
+/* ──────────────── DROPDOWNS ──────────────── */
 function popDrops(){
-  const opts=ST.sk.length?ST.sk.map(s=>`<option value="${s.id}">${s.name}</option>`).join(''):'';
-  ['se-school','in-school'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<option value="">Select school...</option>'+opts;});
+  const opts=ST.sk.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  ['se-school','in-school'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML='<option value="">Select school...</option>'+opts; });
 }
 
+/* ──────────────── SECONDARIES ──────────────── */
 function addSecondary(){
   const sid=document.getElementById('se-school').value;
-  const sk=ST.sk.find(s=>s.id===sid);if(!sk)return;
+  const sk=ST.sk.find(s=>s.id===sid);
+  if(!sk) return;
   ST.se.push({id:'se'+Date.now(),schoolId:sid,schoolName:sk.name,received:document.getElementById('se-received').value,due:document.getElementById('se-due').value,status:document.getElementById('se-status').value,notes:''});
-  save();renderSecs();
+  save(); renderSecs();
 }
-function updateSe(id,f,v){const s=ST.se.find(s=>s.id===id);if(s)s[f]=v;save();}
-function delSe(id){ST.se=ST.se.filter(s=>s.id!==id);save();renderSecs();}
+
+function updateSe(id,f,v){ const s=ST.se.find(s=>s.id===id); if(s) s[f]=v; save(); }
+function delSe(id){ ST.se=ST.se.filter(s=>s.id!==id); save(); renderSecs(); }
 
 function dueInfo(due){
-  if(!due)return{cls:'',lbl:''};
-  const diff=Math.ceil((new Date(due)-new Date())/(864e5));
-  if(diff<0)return{cls:'dd',lbl:`Overdue by ${Math.abs(diff)}d`};
-  if(diff===0)return{cls:'dw',lbl:'Due today'};
-  if(diff<=7)return{cls:'dw',lbl:`Due in ${diff}d`};
-  return{cls:'',lbl:`Due ${new Date(due).toLocaleDateString('en-US',{month:'short',day:'numeric'})}`};
+  if(!due) return{cls:'',lbl:''};
+  const diff=Math.ceil((new Date(due)-new Date())/864e5);
+  if(diff<0) return{cls:'due-late',lbl:`Overdue ${Math.abs(diff)}d`};
+  if(diff===0) return{cls:'due-soon',lbl:'Due today'};
+  if(diff<=7) return{cls:'due-soon',lbl:`Due in ${diff}d`};
+  return{cls:'due-ok',lbl:`Due ${new Date(due).toLocaleDateString('en-US',{month:'short',day:'numeric'})}`};
 }
 
 function renderSecs(){
   const el=document.getElementById('sec-list');
-  if(!ST.se.length){el.innerHTML='<div class="empty">No secondaries tracked yet. Add schools first, then log secondaries as they arrive.</div>';return;}
-  const sso=['not-started','in-progress','submitted'].map(v=>`<option value="${v}">${{'not-started':'Not started','in-progress':'In progress','submitted':'Submitted'}[v]}</option>`).join('');
-  el.innerHTML=ST.se.map(s=>{const d=dueInfo(s.due);return`<div class="seccard"><div class="sech"><span class="secn">${s.schoolName}</span><select class="ssel" onchange="updateSe('${s.id}','status',this.value)">${sso.replace(`value="${s.status}"`,`value="${s.status}" selected`)}</select><button class="db" onclick="delSe('${s.id}')">✕</button></div><div style="display:flex;gap:12px;flex-wrap:wrap">${s.received?`<span class="di">Received: ${new Date(s.received).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''} ${d.lbl?`<span class="di ${d.cls}">${d.lbl}</span>`:''}</div><textarea class="ni" placeholder="Notes, prompts, word counts..." onblur="updateSe('${s.id}','notes',this.value)">${s.notes||''}</textarea></div>`;}).join('');
+  if(!ST.se.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">📄</div>No secondaries tracked yet. Add schools first, then log secondaries as invitations arrive.</div>'; return; }
+  const sso=['not-started','in-progress','submitted'].map(v=>`<option value="${v}">${{'not-started':'Not started','in-progress':'In progress','submitted':'Submitted ✓'}[v]}</option>`).join('');
+  el.innerHTML=ST.se.map(s=>{
+    const d=dueInfo(s.due);
+    return`<div class="sec-card">
+      <div class="sec-head">
+        <span class="sec-name">${s.schoolName}</span>
+        ${d.lbl?`<span class="due-tag ${d.cls}">${d.lbl}</span>`:''}
+        <select class="school-select" onchange="updateSe('${s.id}','status',this.value)">${sso.replace(`"${s.status}"`,`"${s.status}" selected`)}</select>
+        <button class="btn-icon" onclick="delSe('${s.id}')">✕</button>
+      </div>
+      <div class="sec-meta">
+        ${s.received?`<span class="sec-meta-item">📬 Received ${new Date(s.received).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}
+        ${s.due?`<span class="sec-meta-item">📅 Due ${new Date(s.due).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}
+      </div>
+      <textarea class="sec-notes" placeholder="Prompt notes, word counts, drafts, feedback..." onblur="updateSe('${s.id}','notes',this.value)">${s.notes||''}</textarea>
+    </div>`;
+  }).join('');
 }
 
+/* ──────────────── INTERVIEWS ──────────────── */
 function addInterview(){
   const sid=document.getElementById('in-school').value;
-  const sk=ST.sk.find(s=>s.id===sid);if(!sk)return;
+  const sk=ST.sk.find(s=>s.id===sid);
+  if(!sk) return;
   ST.iv.push({id:'iv'+Date.now(),schoolId:sid,schoolName:sk.name,type:document.getElementById('in-type').value,invite:document.getElementById('in-invite').value,date:document.getElementById('in-date').value,status:document.getElementById('in-status').value,notes:''});
-  save();renderInts();
+  save(); renderInts();
 }
-function updateIv(id,f,v){const s=ST.iv.find(s=>s.id===id);if(s)s[f]=v;save();}
-function delIv(id){ST.iv=ST.iv.filter(s=>s.id!==id);save();renderInts();}
+
+function updateIv(id,f,v){ const s=ST.iv.find(s=>s.id===id); if(s) s[f]=v; save(); }
+function delIv(id){ ST.iv=ST.iv.filter(s=>s.id!==id); save(); renderInts(); }
 
 function renderInts(){
   const el=document.getElementById('int-list');
-  if(!ST.iv.length){el.innerHTML='<div class="empty">No interviews tracked yet. Add your school list first.</div>';return;}
-  const iso=['invited','scheduled','complete','cancelled'].map(v=>`<option value="${v}">${v.charAt(0).toUpperCase()+v.slice(1)}</option>`).join('');
-  el.innerHTML=ST.iv.map(s=>`<div class="seccard"><div class="sech"><span class="secn">${s.schoolName}</span><span class="bx bmd">${s.type}</span><select class="ssel" onchange="updateIv('${s.id}','status',this.value)">${iso.replace(`value="${s.status}"`,`value="${s.status}" selected`)}</select><button class="db" onclick="delIv('${s.id}')">✕</button></div><div style="display:flex;gap:12px">${s.invite?`<span class="di">Invite: ${new Date(s.invite).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''} ${s.date?`<span class="di" style="font-weight:500">Interview: ${new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}</div><textarea class="ni" placeholder="Prep notes, format details, thank you note sent..." onblur="updateIv('${s.id}','notes',this.value)">${s.notes||''}</textarea></div>`).join('');
+  if(!ST.iv.length){ el.innerHTML='<div class="empty-state"><div class="empty-icon">💬</div>No interviews tracked yet. Add your school list first.</div>'; return; }
+  const iso=['invited','scheduled','complete','cancelled'].map(v=>`<option value="${v}">${v[0].toUpperCase()+v.slice(1)}</option>`).join('');
+  const isc={invited:'var(--gold)',scheduled:'var(--blue)',complete:'var(--g500)',cancelled:'var(--text3)'};
+  el.innerHTML=ST.iv.map(s=>`
+  <div class="sec-card">
+    <div class="sec-head">
+      <span class="sec-name">${s.schoolName}</span>
+      <span class="badge badge-md" style="background:var(--blue-bg);color:var(--blue)">${s.type}</span>
+      <span style="font-size:12px;color:${isc[s.status]};font-weight:500">● ${s.status[0].toUpperCase()+s.status.slice(1)}</span>
+      <select class="school-select" onchange="updateIv('${s.id}','status',this.value)">${iso.replace(`"${s.status}"`,`"${s.status}" selected`)}</select>
+      <button class="btn-icon" onclick="delIv('${s.id}')">✕</button>
+    </div>
+    <div class="sec-meta">
+      ${s.invite?`<span class="sec-meta-item">📨 Invite: ${new Date(s.invite).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}
+      ${s.date?`<span class="sec-meta-item" style="font-weight:500;color:var(--text)">📅 Interview: ${new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric',weekday:'short'})}</span>`:''}
+    </div>
+    <textarea class="sec-notes" placeholder="Format details, logistics, attire, prep notes, thank-you note sent..." onblur="updateIv('${s.id}','notes',this.value)">${s.notes||''}</textarea>
+  </div>`).join('');
 }
 
-load();renderDash();renderCL('amcas');renderSchools();popDrops();
+/* ──────────────── ACTIVITIES ──────────────── */
+function renderActivities(){
+  const cats=[
+    {key:'clinical',label:'Clinical hours',color:'clinical'},
+    {key:'research',label:'Research hours',color:'research'},
+    {key:'volunteer',label:'Volunteer hours',color:'volunteer'},
+    {key:'shadow',label:'Shadowing hours',color:'shadow'},
+  ];
+  document.getElementById('activity-grid').innerHTML=cats.map(c=>`
+  <div class="activity-card ${c.color}">
+    <div class="activity-label">${c.label}</div>
+    <div class="activity-hrs" id="hrs-${c.key}">${ST.activities[c.key]||0}</div>
+    <input class="activity-input" type="number" min="0" value="${ST.activities[c.key]||0}" placeholder="0" oninput="updateHrs('${c.key}',this.value)">
+  </div>`).join('');
+  renderActEntries();
+}
+
+function updateHrs(key,val){
+  ST.activities[key]=parseInt(val)||0;
+  const el=document.getElementById('hrs-'+key);
+  if(el) el.textContent=ST.activities[key];
+  save();
+}
+
+function addActivityEntry(){
+  ST.actEntries.push({id:'ae'+Date.now(),name:'',type:'Clinical',hours:0,meaningful:false,notes:''});
+  save(); renderActEntries();
+}
+
+function updateAct(id,f,v){ const a=ST.actEntries.find(a=>a.id===id); if(a) a[f]=(f==='meaningful')?v:(f==='hours'?parseInt(v)||0:v); save(); }
+function delAct(id){ ST.actEntries=ST.actEntries.filter(a=>a.id!==id); save(); renderActEntries(); }
+
+function renderActEntries(){
+  const el=document.getElementById('activity-entries');
+  if(!ST.actEntries.length){ el.innerHTML=`<div style="font-size:12.5px;color:var(--text3);padding:8px 0">No activities added. Use the button below to start listing your AMCAS activities.</div>`; return; }
+  el.innerHTML=ST.actEntries.map((a,i)=>`
+  <div style="display:flex;gap:8px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+    <span style="font-size:12px;color:var(--text3);font-weight:500;margin-top:10px;min-width:18px">${i+1}</span>
+    <div style="flex:1;display:flex;gap:8px;flex-wrap:wrap">
+      <input type="text" value="${a.name}" placeholder="Activity name" oninput="updateAct('${a.id}','name',this.value)" style="flex:2;min-width:140px;height:32px;padding:0 10px;border:1px solid var(--border2);border-radius:7px;font-family:var(--font-body);font-size:13px;background:var(--cream)">
+      <select onchange="updateAct('${a.id}','type',this.value)" style="height:32px;padding:0 8px;border:1px solid var(--border2);border-radius:7px;font-family:var(--font-body);font-size:12px;background:var(--cream)">
+        ${['Clinical','Research','Volunteer','Work','Shadowing','Leadership','Teaching','Other'].map(t=>`<option${t===a.type?' selected':''}>${t}</option>`).join('')}
+      </select>
+      <input type="number" value="${a.hours}" min="0" placeholder="Hours" oninput="updateAct('${a.id}','hours',this.value)" style="width:70px;height:32px;padding:0 10px;border:1px solid var(--border2);border-radius:7px;font-family:var(--font-body);font-size:13px;background:var(--cream)">
+      <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--g600);font-weight:500;cursor:pointer">
+        <input type="checkbox" ${a.meaningful?'checked':''} onchange="updateAct('${a.id}','meaningful',this.checked)" style="accent-color:var(--g500)"> Most Meaningful
+      </label>
+    </div>
+    <button class="btn-icon" onclick="delAct('${a.id}')">✕</button>
+  </div>`).join('');
+  const count=ST.actEntries.length;
+  const mm=ST.actEntries.filter(a=>a.meaningful).length;
+  document.getElementById('activity-entries').insertAdjacentHTML('beforeend',`<div style="font-size:12px;color:var(--text3);padding-top:10px">${count}/15 activities · ${mm}/3 Most Meaningful designated</div>`);
+}
+
+/* ──────────────── NOTES ──────────────── */
+function loadNotes(){
+  document.getElementById('notes-main').value = ST.notes.main||'';
+  document.getElementById('notes-ps').value = ST.notes.ps||'';
+  document.getElementById('notes-lors').value = ST.notes.lors||'';
+  updatePsCount();
+}
+function saveNotes(){
+  ST.notes.main=document.getElementById('notes-main').value;
+  ST.notes.ps=document.getElementById('notes-ps').value;
+  ST.notes.lors=document.getElementById('notes-lors').value;
+  updatePsCount(); save();
+}
+function updatePsCount(){
+  const el=document.getElementById('notes-ps');
+  const cnt=document.getElementById('ps-char-count');
+  if(el&&cnt) cnt.textContent=`${el.value.length.toLocaleString()} / 5,300 characters (AMCAS limit)`;
+}
+
+/* ──────────────── INIT ──────────────── */
+load();
+loadProfile();
+renderDash();
+renderCL('amcas');
+updateClPcts();
 </script>
+</body>
+</html>

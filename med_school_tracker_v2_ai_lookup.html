@@ -1,0 +1,424 @@
+
+<h2 class="sr-only">Medical school application tracker with AI-powered admissions lookup</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.app{padding:0.5rem 0 2rem;font-family:var(--font-sans);font-size:14px}
+.tab-nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem;overflow-x:auto}
+.tb{padding:10px 14px;font-size:13px;color:var(--color-text-secondary);border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-0.5px;font-family:var(--font-sans)}
+.tb.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
+.tb:hover:not(.on){color:var(--color-text-primary)}
+.panel{display:none}.panel.on{display:block}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+.sc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.85rem 1rem}
+.sl{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.sn{font-size:22px;font-weight:500}.ss{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.pb{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:8px}
+.pf{height:100%;border-radius:2px;background:var(--color-text-success);transition:width 0.4s}
+.ctog-wrap{display:flex;gap:6px;margin-bottom:1.25rem}
+.ct{padding:5px 12px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;color:var(--color-text-secondary);cursor:pointer;font-family:var(--font-sans)}
+.ct.on{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent}
+.sh{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;padding:1rem 0 0.5rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ci:last-child{border-bottom:none}
+.ci input[type=checkbox]{margin-top:2px;flex-shrink:0;cursor:pointer;accent-color:var(--color-text-success)}
+.cit{flex:1}.cil{font-size:13.5px;line-height:1.4;color:var(--color-text-primary)}
+.cil.done{color:var(--color-text-tertiary);text-decoration:line-through}
+.cin{font-size:11.5px;color:var(--color-text-tertiary);margin-top:2px}
+.af{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:1.25rem;background:var(--color-background-secondary)}
+.fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.fr:last-child{margin-bottom:0}
+.fr input,.fr select{flex:1;min-width:90px;font-size:13px}
+.skcard{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem 1rem;margin-bottom:8px;background:var(--color-background-primary)}
+.skh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.skn{flex:1;font-size:14px;font-weight:500;min-width:80px}
+.bx{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap}
+.bmd{background:var(--color-background-info);color:var(--color-text-info)}
+.bdo{background:var(--color-background-success);color:var(--color-text-success)}
+.bphd{background:var(--color-background-warning);color:var(--color-text-warning)}
+.bsf{background:var(--color-background-success);color:var(--color-text-success)}
+.btg{background:var(--color-background-warning);color:var(--color-text-warning)}
+.brc{background:var(--color-background-danger);color:var(--color-text-danger)}
+.ssel{font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:4px;padding:3px 6px;background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;font-family:var(--font-sans)}
+.db{background:none;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:4px;font-size:14px;line-height:1;border-radius:4px}
+.db:hover{color:var(--color-text-danger)}
+.lookup-btn{background:none;border:0.5px solid var(--color-border-secondary);border-radius:4px;cursor:pointer;color:var(--color-text-secondary);padding:4px 8px;font-size:12px;font-family:var(--font-sans);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.lookup-btn:hover{color:var(--color-text-primary);border-color:var(--color-border-primary)}
+.lookup-btn:disabled{opacity:0.5;cursor:not-allowed}
+.spinner{width:12px;height:12px;border:1.5px solid var(--color-border-secondary);border-top-color:var(--color-text-secondary);border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.adm-box{margin-top:10px;padding-top:10px;border-top:0.5px solid var(--color-border-tertiary)}
+.adm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin-bottom:8px}
+.adm-cell{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 10px}
+.adm-label{font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px}
+.adm-val{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.adm-reqs{margin-top:6px}
+.adm-req-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;font-weight:500}
+.adm-req-item{font-size:12px;color:var(--color-text-secondary);padding:3px 0;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;gap:6px}
+.adm-req-item:last-child{border-bottom:none}
+.adm-req-item::before{content:"–";color:var(--color-text-tertiary);flex-shrink:0}
+.adm-notes{font-size:12px;color:var(--color-text-secondary);margin-top:6px;padding:6px 8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.adm-err{font-size:12px;color:var(--color-text-danger);margin-top:6px}
+.adm-src{font-size:11px;color:var(--color-text-tertiary);margin-top:6px;font-style:italic}
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--color-text-tertiary);font-size:13px}
+.seccard{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem 1rem;margin-bottom:8px;background:var(--color-background-primary)}
+.sech{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.secn{flex:1;font-size:14px;font-weight:500}
+.di{font-size:12px;color:var(--color-text-secondary)}
+.dw{color:var(--color-text-warning);font-weight:500}
+.dd{color:var(--color-text-danger);font-weight:500}
+.ni{width:100%;font-size:12px;padding:5px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);margin-top:6px;resize:vertical;min-height:48px}
+.ni::placeholder{color:var(--color-text-tertiary)}
+.dash-school-hdr{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-secondary);margin:0 0 0.75rem}
+.dsr{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px}
+.dsr:last-child{border-bottom:none}
+.dsn{flex:1;font-weight:500}
+</style>
+<div class="app">
+<div class="tab-nav">
+  <button class="tb on" onclick="sw('dashboard',this)">Dashboard</button>
+  <button class="tb" onclick="sw('checklist',this)">Checklist</button>
+  <button class="tb" onclick="sw('schools',this)">Schools</button>
+  <button class="tb" onclick="sw('secondaries',this)">Secondaries</button>
+  <button class="tb" onclick="sw('interviews',this)">Interviews</button>
+</div>
+<div id="p-dashboard" class="panel on"><div class="sg" id="stat-grid"></div><div id="dash-schools"></div></div>
+<div id="p-checklist" class="panel">
+  <div class="ctog-wrap">
+    <button class="ct on" onclick="swCL('amcas',this)">AMCAS (MD)</button>
+    <button class="ct" onclick="swCL('aacomas',this)">AACOMAS (DO)</button>
+  </div>
+  <div id="cl-content"></div>
+</div>
+<div id="p-schools" class="panel">
+  <div class="af">
+    <div class="fr">
+      <input type="text" id="sk-name" placeholder="School name (e.g. UT Southwestern Medical School)" style="flex:2;min-width:160px">
+      <select id="sk-type"><option value="MD">MD</option><option value="DO">DO</option><option value="MD/PhD">MD/PhD</option></select>
+      <select id="sk-tier"><option value="target">Target</option><option value="safety">Safety</option><option value="reach">Reach</option></select>
+    </div>
+    <div class="fr">
+      <input type="text" id="sk-state" placeholder="State" style="max-width:80px">
+      <select id="sk-status">
+        <option value="not-started">Not started</option><option value="primary-submitted">Primary submitted</option>
+        <option value="secondary-received">Secondary received</option><option value="secondary-submitted">Secondary submitted</option>
+        <option value="interview-invite">Interview invite</option><option value="interview-complete">Interview complete</option>
+        <option value="waitlisted">Waitlisted</option><option value="accepted">Accepted</option>
+        <option value="rejected">Rejected</option><option value="withdrawn">Withdrawn</option>
+      </select>
+      <button onclick="addSchool()">+ Add school</button>
+    </div>
+  </div>
+  <div id="school-list"></div>
+</div>
+<div id="p-secondaries" class="panel">
+  <div class="af">
+    <div class="fr">
+      <select id="se-school" style="flex:2;min-width:150px"><option value="">Select school...</option></select>
+      <input type="date" id="se-received" title="Date received"><input type="date" id="se-due" title="Due date">
+    </div>
+    <div class="fr">
+      <select id="se-status"><option value="not-started">Not started</option><option value="in-progress">In progress</option><option value="submitted">Submitted</option></select>
+      <button onclick="addSecondary()">+ Add secondary</button>
+    </div>
+  </div>
+  <div id="sec-list"></div>
+</div>
+<div id="p-interviews" class="panel">
+  <div class="af">
+    <div class="fr">
+      <select id="in-school" style="flex:2;min-width:150px"><option value="">Select school...</option></select>
+      <select id="in-type"><option value="MMI">MMI</option><option value="Traditional">Traditional</option><option value="Panel">Panel</option><option value="Hybrid">Hybrid</option><option value="Unknown">Unknown</option></select>
+    </div>
+    <div class="fr">
+      <input type="date" id="in-invite" title="Invite date"><input type="date" id="in-date" title="Interview date">
+      <select id="in-status"><option value="invited">Invited</option><option value="scheduled">Scheduled</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option></select>
+      <button onclick="addInterview()">+ Add</button>
+    </div>
+  </div>
+  <div id="int-list"></div>
+</div>
+</div>
+<script>
+const CLD={
+amcas:[
+  {s:'Account & setup',i:[
+    {id:'a01',t:'Create AMCAS account at aamc.org',n:'Opens in May each cycle — do this first'},
+    {id:'a02',t:'Enable two-factor authentication on AAMC account'},
+    {id:'a03',t:'Review the AMCAS applicant guide'},
+  ]},
+  {s:'Biographic information',i:[
+    {id:'a04',t:'Complete Identifying Information section'},
+    {id:'a05',t:'Complete Contact Information'},
+    {id:'a06',t:'Complete Citizenship, Military & Disadvantaged Status'},
+    {id:'a07',t:'Enter Languages'},
+  ]},
+  {s:'Academic history',i:[
+    {id:'a08',t:'Request official transcripts from every college attended',n:'Order early — AMCAS needs originals, takes 2–4 weeks to process'},
+    {id:'a09',t:'Enter all coursework (every class, every semester, every school)',n:'Most time-consuming section — start early'},
+    {id:'a10',t:'Classify courses as BCPM or AO correctly',n:'BCPM = Biology, Chemistry, Physics, Math — affects science GPA'},
+    {id:'a11',t:'Verify transcript matching during AMCAS verification'},
+  ]},
+  {s:'MCAT scores',i:[
+    {id:'a12',t:'Confirm MCAT scores released to AMCAS',n:'Scores take ~30 days after test date to appear'},
+    {id:'a13',t:'Decide on score reporting if retake is planned'},
+  ]},
+  {s:'Work & activities',i:[
+    {id:'a14',t:'List all activities (clinical, research, volunteer, work, shadowing)'},
+    {id:'a15',t:'Write up to 15 activity descriptions',n:'700 characters each — be concise and specific'},
+    {id:'a16',t:'Designate 3 Most Meaningful activities',n:'1,325 characters each — explain impact and what you learned'},
+    {id:'a17',t:'Verify hours and dates are accurate'},
+    {id:'a18',t:'Collect contact info for supervisors of each activity'},
+  ]},
+  {s:'Personal statement',i:[
+    {id:'a19',t:'Brainstorm and outline your narrative'},
+    {id:'a20',t:'Write first draft (5,300 character limit)'},
+    {id:'a21',t:'Revise with feedback from advisor or mentor'},
+    {id:'a22',t:'Proofread final version carefully'},
+    {id:'a23',t:'Paste into AMCAS and check formatting'},
+  ]},
+  {s:'Letters of recommendation',i:[
+    {id:'a24',t:'Identify recommenders (minimum 3 required)',n:'Typically: 2 science faculty, 1 non-science, 1+ clinical supervisor'},
+    {id:'a25',t:'Request letters — ask in person first, then follow with email'},
+    {id:'a26',t:'Send each recommender a packet (CV, PS draft, deadline, school list)'},
+    {id:'a27',t:'Enter LOR authors in AMCAS and send waiver requests'},
+    {id:'a28',t:'Follow up 2–3 weeks before deadline if not yet submitted'},
+    {id:'a29',t:'Confirm all letters received in AMCAS'},
+  ]},
+  {s:'School selection',i:[
+    {id:'a30',t:'Purchase MSAR access for data on every MD school',n:'aamc.org/msar — includes GPA, MCAT, acceptance rates'},
+    {id:'a31',t:'Build balanced list (safety, target, reach schools)'},
+    {id:'a32',t:'Check each school\'s specific requirements (state preference, prerequisites)'},
+    {id:'a33',t:'Designate schools in AMCAS and pay fees'},
+  ]},
+  {s:'Submission',i:[
+    {id:'a34',t:'Review the complete application one final time'},
+    {id:'a35',t:'Certify and submit AMCAS',n:'Submit in June if possible — early submission = faster verification'},
+    {id:'a36',t:'Confirm email receipt from AMCAS'},
+    {id:'a37',t:'Monitor verification status (takes 4–6 weeks in summer)'},
+    {id:'a38',t:'Set up secondary application tracking system'},
+  ]},
+  {s:'Financial aid',i:[
+    {id:'a39',t:'Apply for AAMC Fee Assistance Program (FAP) if eligible',n:'Reduces AMCAS fee and gives MSAR + MCAT prep access'},
+    {id:'a40',t:'Complete FAFSA at studentaid.gov'},
+    {id:'a41',t:'Note each school\'s financial aid deadlines'},
+  ]},
+],
+aacomas:[
+  {s:'Account & setup',i:[
+    {id:'o01',t:'Create AACOMAS account at aacomas.liaisoncas.com',n:'Opens in May — separate system from AMCAS'},
+    {id:'o02',t:'Review the AACOMAS applicant guide and video tutorials'},
+  ]},
+  {s:'Personal information',i:[
+    {id:'o03',t:'Complete Personal Information section'},
+    {id:'o04',t:'Complete Citizenship & Demographics'},
+    {id:'o05',t:'Complete Background Information (criminal, academic dismissal questions)'},
+  ]},
+  {s:'Academic history',i:[
+    {id:'o06',t:'Request official transcripts sent to AACOMAS',n:'Separate request from AMCAS — order simultaneously'},
+    {id:'o07',t:'Enter all coursework in AACOMAS'},
+    {id:'o08',t:'Review AACOMAS GPA recalculation rules',n:'Grade replacement policy for repeated courses differs from AMCAS'},
+  ]},
+  {s:'MCAT scores',i:[
+    {id:'o09',t:'Verify MCAT scores submitted to AACOMAS'},
+  ]},
+  {s:'Experiences',i:[
+    {id:'o10',t:'Enter all experiences (clinical, research, volunteer, work)'},
+    {id:'o11',t:'Verify all hours and dates are accurate'},
+    {id:'o12',t:'Include shadowing of a DO physician if applicable',n:'Required or strongly preferred by most DO schools'},
+  ]},
+  {s:'Personal statement',i:[
+    {id:'o13',t:'Write AACOMAS personal statement (4,500 character limit)',n:'Can adapt AMCAS version but MUST address DO-specific content'},
+    {id:'o14',t:'Address osteopathic philosophy and OMM in your statement',n:'Explain why DO specifically, not just medicine generally'},
+    {id:'o15',t:'Proofread and finalize'},
+  ]},
+  {s:'Letters of recommendation',i:[
+    {id:'o16',t:'Secure letter from a DO physician',n:'Required by many DO programs — check each school'},
+    {id:'o17',t:'Enter all LOR authors in AACOMAS'},
+    {id:'o18',t:'Confirm all letters received in system'},
+  ]},
+  {s:'School selection',i:[
+    {id:'o19',t:'Research DO schools using AACOMAS school directory'},
+    {id:'o20',t:'Visit individual school websites for specific requirements'},
+    {id:'o21',t:'Check state preference policies for each school'},
+    {id:'o22',t:'Note any early decision programs'},
+    {id:'o23',t:'Designate DO schools and pay fees'},
+  ]},
+  {s:'Submission',i:[
+    {id:'o24',t:'Review entire AACOMAS application'},
+    {id:'o25',t:'Certify and submit',n:'DO schools have rolling admissions — earlier is better'},
+    {id:'o26',t:'Confirm receipt and begin monitoring for secondary invites'},
+  ]},
+]};
+
+let ST={cl:{},sk:[],se:[],iv:[]};
+function save(){try{localStorage.setItem('msa_v2',JSON.stringify(ST));}catch(e){}}
+function load(){try{const d=localStorage.getItem('msa_v2');if(d){const p=JSON.parse(d);ST={...ST,...p};}}catch(e){}}
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='dashboard')renderDash();
+  if(id==='checklist')renderCL(curCL);
+  if(id==='schools'){renderSchools();popDrops();}
+  if(id==='secondaries'){popDrops();renderSecs();}
+  if(id==='interviews'){popDrops();renderInts();}
+}
+
+let curCL='amcas';
+function swCL(type,btn){curCL=type;document.querySelectorAll('.ct').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderCL(type);}
+
+function clDone(type){const all=CLD[type].flatMap(s=>s.i).map(i=>i.id);return{done:all.filter(id=>ST.cl[id]).length,total:all.length};}
+
+function renderDash(){
+  const am=clDone('amcas'),aa=clDone('aacomas');
+  const skl=ST.sk,sec=ST.se,inv=ST.iv;
+  const secDone=sec.filter(s=>s.status==='submitted').length;
+  const intSched=inv.filter(i=>i.status==='scheduled'||i.status==='complete').length;
+  const accepted=skl.filter(s=>s.status==='accepted').length;
+  document.getElementById('stat-grid').innerHTML=`
+    <div class="sc"><div class="sl">AMCAS</div><div class="sn">${am.done}<span style="font-size:14px;color:var(--color-text-tertiary)">/${am.total}</span></div><div class="ss">${Math.round(am.done/am.total*100)}% complete</div><div class="pb"><div class="pf" style="width:${Math.round(am.done/am.total*100)}%"></div></div></div>
+    <div class="sc"><div class="sl">AACOMAS</div><div class="sn">${aa.done}<span style="font-size:14px;color:var(--color-text-tertiary)">/${aa.total}</span></div><div class="ss">${Math.round(aa.done/aa.total*100)}% complete</div><div class="pb"><div class="pf" style="width:${Math.round(aa.done/aa.total*100)}%"></div></div></div>
+    <div class="sc"><div class="sl">Schools</div><div class="sn">${skl.length}</div><div class="ss">${skl.filter(s=>s.tier==='reach').length} reach · ${skl.filter(s=>s.tier==='target').length} target · ${skl.filter(s=>s.tier==='safety').length} safety</div></div>
+    <div class="sc"><div class="sl">Secondaries</div><div class="sn">${secDone}<span style="font-size:14px;color:var(--color-text-tertiary)">/${sec.length}</span></div><div class="ss">${sec.filter(s=>s.status==='in-progress').length} in progress</div></div>
+    <div class="sc"><div class="sl">Interviews</div><div class="sn">${inv.length}</div><div class="ss">${intSched} scheduled/done</div></div>
+    ${accepted>0?`<div class="sc" style="border:0.5px solid var(--color-border-success)"><div class="sl" style="color:var(--color-text-success)">Acceptances</div><div class="sn" style="color:var(--color-text-success)">${accepted}</div></div>`:''}`;
+  const dsl=document.getElementById('dash-schools');
+  if(!skl.length){dsl.innerHTML='';return;}
+  const SL={'not-started':'Not started','primary-submitted':'Primary submitted','secondary-received':'Secondary received','secondary-submitted':'Secondary submitted','interview-invite':'Interview invite','interview-complete':'Interview complete','waitlisted':'Waitlisted','accepted':'Accepted','rejected':'Rejected','withdrawn':'Withdrawn'};
+  const SC={'not-started':'var(--color-text-tertiary)','primary-submitted':'var(--color-text-secondary)','secondary-received':'var(--color-text-warning)','secondary-submitted':'var(--color-text-warning)','interview-invite':'var(--color-text-info)','interview-complete':'var(--color-text-info)','waitlisted':'var(--color-text-warning)','accepted':'var(--color-text-success)','rejected':'var(--color-text-danger)','withdrawn':'var(--color-text-tertiary)'};
+  dsl.innerHTML='<div class="dash-school-hdr">School status overview</div>'+skl.map(s=>`<div class="dsr"><span class="bx ${s.type==='DO'?'bdo':s.type==='MD/PhD'?'bphd':'bmd'}">${s.type}</span><span class="bx ${s.tier==='reach'?'brc':s.tier==='safety'?'bsf':'btg'}">${s.tier}</span><span class="dsn">${s.name}${s.state?' <span style="color:var(--color-text-tertiary);font-weight:400;font-size:12px">'+s.state+'</span>':''}</span><span style="font-size:12px;color:${SC[s.status]||'var(--color-text-secondary)'}">${SL[s.status]||s.status}</span></div>`).join('');
+}
+
+function renderCL(type){
+  document.getElementById('cl-content').innerHTML=CLD[type].map(sec=>`<div class="sh">${sec.s}</div>${sec.i.map(item=>`<div class="ci"><input type="checkbox" ${ST.cl[item.id]?'checked':''} onchange="toggleCI('${item.id}')"><div class="cit"><div class="cil ${ST.cl[item.id]?'done':''}">${item.t}</div>${item.n?`<div class="cin">${item.n}</div>`:''}</div></div>`).join('')}`).join('');
+}
+function toggleCI(id){ST.cl[id]=!ST.cl[id];save();renderCL(curCL);}
+
+function statusOpts(cur){
+  const opts=[['not-started','Not started'],['primary-submitted','Primary submitted'],['secondary-received','Secondary received'],['secondary-submitted','Secondary submitted'],['interview-invite','Interview invite'],['interview-complete','Interview complete'],['waitlisted','Waitlisted'],['accepted','Accepted'],['rejected','Rejected'],['withdrawn','Withdrawn']];
+  return opts.map(([v,l])=>`<option value="${v}"${v===cur?' selected':''}>${l}</option>`).join('');
+}
+
+async function lookupSchool(id){
+  const sk=ST.sk.find(s=>s.id===id);
+  if(!sk||sk.loading)return;
+  sk.loading=true;sk.admissions=null;
+  save();renderSchools();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system:`You are a medical school admissions data assistant. Search for the admissions requirements for the specified medical school and return ONLY a valid JSON object — no markdown, no explanation, no preamble. The JSON must have exactly these keys: gpa_avg (string, e.g. "3.72"), mcat_avg (string, e.g. "512"), deadline_primary (string, e.g. "October 1, 2025"), deadline_secondary (string, e.g. "6 weeks after receipt"), interview_format (string, e.g. "MMI"), class_size (string, e.g. "200"), secondary_fee (string, e.g. "$100"), key_requirements (array of up to 4 short strings), notes (string, one sentence). Use "N/A" for unknown fields. Return ONLY the JSON object.`,
+        messages:[{role:'user',content:`Find 2025-2026 admissions requirements for ${sk.name}. I need: average GPA, average MCAT, primary application deadline, secondary essay deadline, interview format, class size, secondary fee, notable admission requirements or policies.`}]
+      })
+    });
+    const data=await res.json();
+    const textBlocks=data.content.filter(c=>c.type==='text');
+    const raw=textBlocks[textBlocks.length-1]?.text||'';
+    const match=raw.match(/\{[\s\S]*\}/);
+    if(!match)throw new Error('No JSON found');
+    const info=JSON.parse(match[0]);
+    sk.admissions=info;sk.loading=false;
+    save();renderSchools();
+  }catch(e){
+    sk.loading=false;
+    sk.admissions={error:'Could not retrieve data — try again, or check the school\'s admissions website directly.'};
+    save();renderSchools();
+  }
+}
+
+function renderAdmBox(sk){
+  if(sk.loading)return`<div class="adm-box" style="display:flex;align-items:center;gap:8px;color:var(--color-text-secondary);font-size:12px"><div class="spinner"></div>Searching for admissions data...</div>`;
+  if(!sk.admissions)return'';
+  const a=sk.admissions;
+  if(a.error)return`<div class="adm-box"><div class="adm-err">${a.error}</div></div>`;
+  const cells=[['Avg GPA',a.gpa_avg],['Avg MCAT',a.mcat_avg],['Primary deadline',a.deadline_primary],['Secondary deadline',a.deadline_secondary],['Interview format',a.interview_format],['Class size',a.class_size],['Secondary fee',a.secondary_fee]].filter(([,v])=>v&&v!=='N/A');
+  return`<div class="adm-box">
+    <div class="adm-grid">${cells.map(([l,v])=>`<div class="adm-cell"><div class="adm-label">${l}</div><div class="adm-val">${v}</div></div>`).join('')}</div>
+    ${(a.key_requirements&&a.key_requirements.length)?`<div class="adm-reqs"><div class="adm-req-label">Key requirements</div>${a.key_requirements.map(r=>`<div class="adm-req-item">${r}</div>`).join('')}</div>`:''}
+    ${a.notes&&a.notes!=='N/A'?`<div class="adm-notes">${a.notes}</div>`:''}
+    <div class="adm-src">Data sourced via AI web search — verify at the school's official admissions page before relying on deadlines.</div>
+  </div>`;
+}
+
+function addSchool(){
+  const n=document.getElementById('sk-name').value.trim();
+  if(!n)return;
+  ST.sk.push({id:'sk'+Date.now(),name:n,type:document.getElementById('sk-type').value,tier:document.getElementById('sk-tier').value,state:document.getElementById('sk-state').value.trim(),status:document.getElementById('sk-status').value,admissions:null,loading:false});
+  document.getElementById('sk-name').value='';document.getElementById('sk-state').value='';
+  save();renderSchools();popDrops();
+}
+function updateSkStatus(id,v){ST.sk.find(s=>s.id===id).status=v;save();}
+function delSk(id){ST.sk=ST.sk.filter(s=>s.id!==id);save();renderSchools();popDrops();}
+function clearAdmissions(id){const sk=ST.sk.find(s=>s.id===id);if(sk){sk.admissions=null;sk.loading=false;}save();renderSchools();}
+
+function renderSchools(){
+  const el=document.getElementById('school-list');
+  if(!ST.sk.length){el.innerHTML='<div class="empty">No schools added yet. Add your first school above.</div>';return;}
+  el.innerHTML=ST.sk.map(s=>`
+  <div class="skcard">
+    <div class="skh">
+      <span class="bx ${s.type==='DO'?'bdo':s.type==='MD/PhD'?'bphd':'bmd'}">${s.type}</span>
+      <span class="bx ${s.tier==='reach'?'brc':s.tier==='safety'?'bsf':'btg'}">${s.tier}</span>
+      <span class="skn">${s.name}${s.state?' <span style="font-weight:400;font-size:12px;color:var(--color-text-tertiary)">'+s.state+'</span>':''}</span>
+      <button class="lookup-btn" onclick="lookupSchool('${s.id}')" ${s.loading?'disabled':''} title="Look up admissions requirements">${s.loading?'<div class="spinner"></div> Searching...':'&#128269; Look up requirements'}</button>
+      <select class="ssel" onchange="updateSkStatus('${s.id}',this.value)">${statusOpts(s.status)}</select>
+      <button class="db" onclick="delSk('${s.id}')" title="Remove">✕</button>
+    </div>
+    ${renderAdmBox(s)}
+  </div>`).join('');
+}
+
+function popDrops(){
+  const opts=ST.sk.length?ST.sk.map(s=>`<option value="${s.id}">${s.name}</option>`).join(''):'';
+  ['se-school','in-school'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<option value="">Select school...</option>'+opts;});
+}
+
+function addSecondary(){
+  const sid=document.getElementById('se-school').value;
+  const sk=ST.sk.find(s=>s.id===sid);if(!sk)return;
+  ST.se.push({id:'se'+Date.now(),schoolId:sid,schoolName:sk.name,received:document.getElementById('se-received').value,due:document.getElementById('se-due').value,status:document.getElementById('se-status').value,notes:''});
+  save();renderSecs();
+}
+function updateSe(id,f,v){const s=ST.se.find(s=>s.id===id);if(s)s[f]=v;save();}
+function delSe(id){ST.se=ST.se.filter(s=>s.id!==id);save();renderSecs();}
+
+function dueInfo(due){
+  if(!due)return{cls:'',lbl:''};
+  const diff=Math.ceil((new Date(due)-new Date())/(864e5));
+  if(diff<0)return{cls:'dd',lbl:`Overdue by ${Math.abs(diff)}d`};
+  if(diff===0)return{cls:'dw',lbl:'Due today'};
+  if(diff<=7)return{cls:'dw',lbl:`Due in ${diff}d`};
+  return{cls:'',lbl:`Due ${new Date(due).toLocaleDateString('en-US',{month:'short',day:'numeric'})}`};
+}
+
+function renderSecs(){
+  const el=document.getElementById('sec-list');
+  if(!ST.se.length){el.innerHTML='<div class="empty">No secondaries tracked yet. Add schools first, then log secondaries as they arrive.</div>';return;}
+  const sso=['not-started','in-progress','submitted'].map(v=>`<option value="${v}">${{'not-started':'Not started','in-progress':'In progress','submitted':'Submitted'}[v]}</option>`).join('');
+  el.innerHTML=ST.se.map(s=>{const d=dueInfo(s.due);return`<div class="seccard"><div class="sech"><span class="secn">${s.schoolName}</span><select class="ssel" onchange="updateSe('${s.id}','status',this.value)">${sso.replace(`value="${s.status}"`,`value="${s.status}" selected`)}</select><button class="db" onclick="delSe('${s.id}')">✕</button></div><div style="display:flex;gap:12px;flex-wrap:wrap">${s.received?`<span class="di">Received: ${new Date(s.received).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''} ${d.lbl?`<span class="di ${d.cls}">${d.lbl}</span>`:''}</div><textarea class="ni" placeholder="Notes, prompts, word counts..." onblur="updateSe('${s.id}','notes',this.value)">${s.notes||''}</textarea></div>`;}).join('');
+}
+
+function addInterview(){
+  const sid=document.getElementById('in-school').value;
+  const sk=ST.sk.find(s=>s.id===sid);if(!sk)return;
+  ST.iv.push({id:'iv'+Date.now(),schoolId:sid,schoolName:sk.name,type:document.getElementById('in-type').value,invite:document.getElementById('in-invite').value,date:document.getElementById('in-date').value,status:document.getElementById('in-status').value,notes:''});
+  save();renderInts();
+}
+function updateIv(id,f,v){const s=ST.iv.find(s=>s.id===id);if(s)s[f]=v;save();}
+function delIv(id){ST.iv=ST.iv.filter(s=>s.id!==id);save();renderInts();}
+
+function renderInts(){
+  const el=document.getElementById('int-list');
+  if(!ST.iv.length){el.innerHTML='<div class="empty">No interviews tracked yet. Add your school list first.</div>';return;}
+  const iso=['invited','scheduled','complete','cancelled'].map(v=>`<option value="${v}">${v.charAt(0).toUpperCase()+v.slice(1)}</option>`).join('');
+  el.innerHTML=ST.iv.map(s=>`<div class="seccard"><div class="sech"><span class="secn">${s.schoolName}</span><span class="bx bmd">${s.type}</span><select class="ssel" onchange="updateIv('${s.id}','status',this.value)">${iso.replace(`value="${s.status}"`,`value="${s.status}" selected`)}</select><button class="db" onclick="delIv('${s.id}')">✕</button></div><div style="display:flex;gap:12px">${s.invite?`<span class="di">Invite: ${new Date(s.invite).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''} ${s.date?`<span class="di" style="font-weight:500">Interview: ${new Date(s.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}</div><textarea class="ni" placeholder="Prep notes, format details, thank you note sent..." onblur="updateIv('${s.id}','notes',this.value)">${s.notes||''}</textarea></div>`).join('');
+}
+
+load();renderDash();renderCL('amcas');renderSchools();popDrops();
+</script>
